@@ -1,5 +1,5 @@
 """
-Enhanced Chat Analysis Tool for Extended AI Dialogue Research
+ChatGPT-DialogueMetrics Tool for Extended AI Dialogue Research
 ==============================================================
 
 This script analyzes ChatGPT conversation JSON exports to extract
@@ -1712,8 +1712,8 @@ with pd.ExcelWriter(main_output_file, engine="xlsxwriter") as main_writer, \
         "CITATION:",
         "",
         "If using this tool in research, please cite:",
-        "Enhanced Chat Analysis Tool v3.2",
-        "Adapted from: [Original Author] extended by Claude (Anthropic) and Gemini",
+        "ChatGPT-DialogueMetrics v3.2",
+        "Adapted from: [R.Rex] extended by ChatGPT (OpenAI), Claude (Anthropic), Kimi (Moonshot AI), DeepSeek (DeepSeek AI) and Gemini" (Google DeepMind),
         f"Generated: {datetime.now().strftime('%Y-%m-%d')}",
         "",
         "LICENSE: MIT (Open Source)",
