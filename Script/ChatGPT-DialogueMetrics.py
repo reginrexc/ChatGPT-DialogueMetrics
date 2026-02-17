@@ -935,7 +935,7 @@ def detect_response_edits(messages):
 
 # === MAIN PROCESSING ===
 print("=" * 80)
-print("ENHANCED CHAT ANALYSIS TOOL v3.2")
+print("ChatGPT-DialogueMetrics v3.2")
 print("=" * 80)
 print(f"\nLoading: {input_file}")
 
@@ -1713,7 +1713,7 @@ with pd.ExcelWriter(main_output_file, engine="xlsxwriter") as main_writer, \
         "",
         "If using this tool in research, please cite:",
         "ChatGPT-DialogueMetrics v3.2",
-        "Adapted from: [R.Rex] extended by ChatGPT (OpenAI), Claude (Anthropic), Kimi (Moonshot AI), DeepSeek (DeepSeek AI) and Gemini" (Google DeepMind),
+        "Adapted from: [R.Rex] extended by ChatGPT (OpenAI), Claude (Anthropic), Kimi (Moonshot AI), DeepSeek (DeepSeek AI) and Gemini (Google DeepMind)",
         f"Generated: {datetime.now().strftime('%Y-%m-%d')}",
         "",
         "LICENSE: MIT (Open Source)",
