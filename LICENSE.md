@@ -18,7 +18,7 @@ If you do not agree to these terms, do not use the Software.
 ## BEFORE YOU PROCEED
 
 This license is an experiment in protecting independent commons-based 
-production. Read the [Declaration of Hope and Intent](/license/DECLARATION.md) 
+production. Read the [Declaration of Hope and Intent](/License/DECLARATION.md) 
 to understand its motivations and limitations.
 
 ---
