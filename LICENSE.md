@@ -4,6 +4,20 @@
 
 ---
 
+## A NOTE FROM THE AUTHOR
+
+Before you proceed: This license is an experiment in protecting independent 
+commons-based production. It makes no promises of legal certainty or 
+protection against determined adversaries. 
+
+If you share our principles—abundance over enclosure, legacy over profit, 
+community over capture—read our [Declaration of Hope and Intent](/license/DECLARATION.md).
+
+If you need traditional IP protection, consult legal counsel. This license 
+is not for everyone.
+
+---
+
 ## ACCEPTANCE OF TERMS
 
 By obtaining, using, copying, modifying, merging, publishing, distributing, 
