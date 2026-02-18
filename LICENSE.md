@@ -4,20 +4,6 @@
 
 ---
 
-## A NOTE FROM THE AUTHOR
-
-Before you proceed: This license is an experiment in protecting independent 
-commons-based production. It makes no promises of legal certainty or 
-protection against determined adversaries. 
-
-If you share our principles—abundance over enclosure, legacy over profit, 
-community over capture—read our [Declaration of Hope and Intent](/license/DECLARATION.md).
-
-If you need traditional IP protection, consult legal counsel. This license 
-is not for everyone.
-
----
-
 ## ACCEPTANCE OF TERMS
 
 By obtaining, using, copying, modifying, merging, publishing, distributing, 
@@ -26,6 +12,14 @@ or creating derivative works of this software and associated documentation
 of this Research Commons Non-Monetization License ("RCNM" or "License").
 
 If you do not agree to these terms, do not use the Software.
+
+---
+
+## BEFORE YOU PROCEED
+
+This license is an experiment in protecting independent commons-based 
+production. Read the [Declaration of Hope and Intent](/license/DECLARATION.md) 
+to understand its motivations and limitations.
 
 ---
 
