@@ -411,3 +411,909 @@ Entities assuming custody of RCNM-licensed Software (including but not limited t
 |-----------|-----------|--------------|-------------|---------------|
 | https://github.com/user/fork-name | Jane Doe | 2026-03-15 | Added visualization module | Fork with extension |
 | https://gitlab.com/org/adaptation | Team X | 2026-04-02 | Ported to Rust language | Reimplementation |
+```
+
+**Timing**: Disclosure must occur **before public release** of the incorporating project, or within **30 days** of discovery of incorporation if identified post-release.
+
+### 8.3 Fractional Use and Proportionality
+
+**No De Minimis Exception**: There is no "too small to matter" exception. Even:
+- A single function
+- A specific data structure
+- A novel analytical approach
+- A distinctive organizational pattern
+
+triggers full disclosure requirements.
+
+**Cumulative Effect**: Multiple small incorporations from the same source by the same entity are treated as single substantial incorporation for registration purposes.
+
+### 8.4 Verification and Community Audit
+
+**Public Record**: All incorporations are recorded in public registry, enabling:
+- Community verification of compliance
+- Detection of undisclosed use
+- Academic citation and impact tracking
+- Lineage mapping across the ecosystem
+
+**Good Faith presumption**: Incorporations submitted in good faith with complete documentation are presumed compliant pending community review.
+
+---
+
+## 9. PUBLIC INTEREST OVERRIDE AND JUDICIAL DISCRETION
+
+### 9.1 Supreme Authority Exception
+
+**Recognition of Limitation**: The Author acknowledges that absolute license terms may, in exceptional circumstances, conflict with paramount public interest in service of humanity.
+
+**Exceptional Override**: A duly constituted **Supreme Court** (or equivalent highest judicial authority in relevant jurisdiction) may exercise **discretionary power** to permit limited modification of RCNM terms when:
+
+**Conditions for Override**:
+1. **Humanitarian Necessity**: The incorporating entity demonstrates capacity to deploy the Software in manner directly serving critical human welfare (e.g., disaster response, public health emergency, environmental catastrophe, fundamental rights protection)
+2. **Exceptional Circumstance**: Standard RCNM compliance would prevent or significantly impede such humanitarian deployment
+3. **No Adequate Alternative**: No other tool or approach could achieve comparable humanitarian benefit
+4. **Public Interest Primacy**: The humanitarian benefit demonstrably outweighs the commons-preservation interest
+
+### 9.2 Judicial Process and Safeguards
+
+**Petition Requirements**: Entity seeking override must:
+- Submit detailed petition to Supreme Court of competent jurisdiction
+- Notify original Author (if living and locatable) and known community of petition
+- Demonstrate specific humanitarian application with evidence of capability and intent
+- Propose specific modifications to RCNM terms necessary for deployment
+- Commit to maximum feasible compliance with RCNM spirit (attribution, non-enclosure where possible, eventual public release)
+
+**Court Discretion**: The Court may:
+- **Grant**: Permit specified modifications for specified humanitarian purpose
+- **Deny**: Reject petition if conditions unmet or public interest insufficient
+- **Condition**: Grant with requirements (e.g., time limits, reporting obligations, eventual open release)
+
+**Mandatory Considerations**: Court must consider:
+- Original Author's intent and principles (as documented in Appendix files)
+- Impact on commons-based ecosystem
+- Precedent effect of override
+- Availability of less restrictive alternatives
+
+### 9.3 Limitations on Override
+
+**Scope Limitation**: Any override applies **only** to:
+- Specific incorporating entity
+- Specific humanitarian application
+- Specific temporal period (if court-imposed)
+- Specific necessary modifications
+
+**No General Precedent**: Judicial override in one case creates **no automatic entitlement** for other entities or applications. Each petition evaluated de novo.
+
+**Non-Transferability**: Override rights granted to one entity may not be transferred, sold, or extended to other applications by same entity.
+
+**Commons Preservation Mandate**: Court should impose **minimum necessary** modification to RCNM terms, preserving:
+- Attribution requirements
+- Non-monetization of core Software
+- Eventual public release of modifications (where temporally feasible)
+- Prohibition on using override for general commercial advantage
+
+### 9.4 Post-Humanitarian Obligations
+
+If override granted:
+
+**Reporting**: Entity must report to Court and original community on:
+- Deployment status and effectiveness
+- Compliance with override conditions
+- Timeline for eventual RCNM compliance or transition
+
+**Sunset Provision**: Override expires when humanitarian necessity ends, at which point:
+- Standard RCNM terms reapply fully
+- Modifications must be released under RCNM or equivalent terms
+- Entity must transition to full compliance or cease use
+
+**No Enclosure**: Override does **not** permit:
+- General commercial exploitation
+- Proprietary product development
+- Patenting of incorporated elements
+- Prevention of others' access to original RCNM-licensed Software
+
+### 9.5 Examples of Potential Override Scenarios
+
+**Illustrative (not exhaustive)**:
+
+| Scenario | Possible Override | Conditions |
+|----------|----------------|-----------|
+| Pandemic response: Company adapts dialogue analysis tool for disease contact tracing | Permit temporary non-release of modifications during emergency | Mandatory eventual release; attribution; no commercial use |
+| Climate disaster: Entity uses architectural framework for emergency coordination system | Permit integration into proprietary emergency infrastructure | Time-limited; mandatory transition to open source post-crisis |
+| Human rights crisis: Organization deploys modified tool for documenting atrocities | Permit operational security modifications not publicly released | Judicial oversight of necessity; eventual disclosure when safe |
+
+**Non-Qualifying Scenarios** (override unlikely):
+- General commercial advantage
+- Competitive improvement over rivals
+- Cost savings or convenience
+- Minor efficiency gains
+
+---
+
+## 10. PARENT-CHILD LICENSE INDEPENDENCE AND INSTANTANEOUS ORPHAN MECHANISM
+
+### 10.1 Foundational Principle: Scope of Author Authority
+
+The Author's licensing authority extends exclusively to:
+
+- The original Software as created and maintained by the Author
+- Contributions made solely by the Author
+- Documentation authored exclusively by the Author
+- Architectural decisions made solely by the Author without derivative contribution
+
+The Author's licensing authority does NOT extend to:
+
+- Child Repositories created by third parties
+- Modifications contributed by independent developers
+- Derivative works maintained by non-Author entities
+- Any work in which a third party has made substantial creative contribution
+
+**Rationale:** The Author can only license what the Author owns. Third-party contributors own their contributions. The Author cannot re-license the contributions of others, regardless of what happens to the parent license.
+
+### 10.2 Instantaneous Orphan Mechanism
+
+**Trigger Event:** If the Author initiates any of the following with respect to the original Software:
+
+1. Re-licensing to a less protective license (e.g., MIT, Apache, BSD, CC0)
+2. Re-licensing to a commercial or proprietary license
+3. Transfer of copyright or control to a commercial entity
+4. Any modification of license terms that weakens non-monetization or share-alike protections
+5. Voluntary deactivation of RCNM following the Section 4.6 delay period
+
+**Instantaneous Effect:** Upon trigger, all registered and unregistered Child Repositories:
+
+- **Immediately and automatically** achieve full license independence
+- **Retain their RCNM status** without any action required by Child maintainers
+- **Are no longer bound** to any decisions of the Author or new license holder
+- **Become self-governing** under their existing RCNM terms
+- **Inherit no obligation** from the parent's new license
+- **Cannot be claimed** by any entity that acquired or influenced the parent license
+
+**No Action Required:** Child independence is automatic. Child maintainers need not:
+- File documents
+- Make announcements
+- Take legal action
+- Seek permission
+
+The independence is instantaneous and self-executing upon the trigger event.
+
+### 10.3 Orphan Status Defined
+
+**Definition of License Orphan:** A Child Repository that has achieved independence from the Parent under Section 10.2, operating under self-governing RCNM terms without a living parent license authority.
+
+**What Orphan Status Means:**
+
+The Child:
+- ✓ Retains full RCNM protection
+- ✓ Continues under existing license terms
+- ✓ May accept new contributions under same RCNM terms
+- ✓ May create its own Child Repositories
+- ✓ Maintains its own lineage documentation
+- ✓ Is governed by its own maintainer community
+
+The Child is NOT:
+- ✗ Bound by the parent's new license
+- ✗ Claimable by entities that acquired parent rights
+- ✗ Subject to the Author's new licensing decisions
+- ✗ Vulnerable to commercial capture through parent acquisition
+- ✗ Required to re-license or cease operation
+
+**Orphan as Feature, Not Bug:** License orphan status is a designed protection. It ensures that the ecosystem built around the original Software cannot be captured through acquisition of the original Author's rights.
+
+### 10.4 Anti-Capture Through Compliance Provision
+
+**The Friendly Actor Exploit:** This clause specifically addresses the following attack vector:
+
+1. Commercial entity acts as ethical contributor under RCNM
+2. Entity registers Child Repository, shares modifications, builds trust
+3. Entity approaches Author with resources, funding, or acquisition offer
+4. Author accepts and re-licenses parent under non-RCNM terms
+5. Entity attempts to claim the entire ecosystem including independent Children
+
+**This exploit is explicitly defeated:**
+
+- Step 5 is legally impossible under Section 10.2
+- Child Repositories achieve independence at Step 4
+- Entity's compliance during Steps 1-3 grants no retrospective rights over independent contributions
+- Entity may acquire the Author's original work only
+- Entity may NOT acquire, claim, or re-license independent Children
+- Entity's offer cannot be conditioned on Child compliance, as the Author has no authority to deliver it
+
+**Explicit Prohibition:** Any agreement between the Author and a third party that purports to:
+- Transfer rights over Child Repositories
+- Require Children to re-license
+- Grant access or authority over independently maintained derivatives
+- Condition the Author's re-licensing on Children's compliance
+
+is void and unenforceable with respect to the Child Repositories. The Author cannot sell, transfer, or encumber what the Author does not own.
+
+### 10.5 Community Notification and Documentation
+
+**Upon trigger of Instantaneous Orphan Mechanism:**
+
+1. **Automatic Record:** The trigger event is documented in CHILDREN.md and INCORPORATIONS.md at time of detection
+2. **Community Alert:** Known Child maintainers are notified of:
+   - The trigger event
+   - Their automatic independence
+   - Their continuing RCNM status
+   - The inaccessibility of the parent to commercial actors claiming rights
+3. **Lineage Documentation:** Children update their lineage records to reflect:
+   - Date of orphan activation
+   - Nature of trigger event
+   - Continuing RCNM status
+   - Independence from parent license decisions
+
+### 10.6 New Root Declaration
+
+**Upon Orphan Activation:** Any Child Repository may optionally:
+
+1. Declare itself a **New Root Repository** for its lineage subtree
+2. Assume documentation custody for its own Children
+3. Establish its own succession protocol
+4. Maintain its own CHILDREN.md and INCORPORATIONS.md registries
+
+**New Root Status:**
+- Does not require Author permission
+- Does not require any formal process
+- Is self-declaring upon announcement in repository documentation
+- Inherits no obligations from the acquired parent
+- Establishes independent governance under RCNM
+
+### 10.7 What the Author May Legitimately Transfer
+
+**Upon re-licensing, the Author may transfer:**
+
+- ✓ The original source code authored solely by the Author
+- ✓ Documentation written solely by the Author
+- ✓ The Author's own architectural contributions
+- ✓ The repository container (hosting, domain, infrastructure)
+- ✓ The brand name of the original project (subject to community challenge)
+
+**The Author may NOT transfer:**
+
+- ✗ Rights over Child Repositories
+- ✗ Rights over third-party contributions
+- ✗ Authority to change Children's license terms
+- ✗ Access to independently maintained derivatives
+- ✗ The RCNM ecosystem built by the community
+
+**Effect:** A commercial entity acquiring the Author's rights acquires the original work only. It inherits an orphaned ecosystem it cannot control. The commons persists independently.
+
+### 10.8 Protection of Independent Contributors
+
+**This clause exists to protect:**
+
+1. **Independent developers** who contributed modifications in good faith
+2. **Community members** who built tools on the RCNM foundation
+3. **Researchers** who depend on free access to the ecosystem
+4. **Future contributors** who would otherwise inherit the consequences of the Author's decisions
+
+**Core Principle:**
+
+A contributor who shared modifications under RCNM terms did so believing those terms would persist. They accepted no compensation in exchange for their contribution. Their contribution cannot be captured by a party that acquired the Author's rights, because:
+
+- Their contribution was made to the commons, not to the Author
+- The Author never owned their contribution
+- No acquisition of the Author's assets includes their contribution
+- Their RCNM release was irrevocable on their own terms
+
+### 10.9 Grandfather Clause for Existing Registrations
+
+**Pre-Trigger Compliance:** All Child repositories that registered prior to the trigger event:
+
+- Retain their registration record as historical documentation
+- Are not bound to continue any relationship with the parent
+- May maintain, remove, or archive their registration at their discretion
+- Owe no obligations to the new license holder
+
+**Their prior compliance was compliance with RCNM, not with the Author personally. RCNM persists. Their obligations to RCNM persist. Their obligations to the Author's new license holder: none.**
+
+### 10.10 Summary: What This Clause Achieves
+
+```
+BEFORE SECTION 10:
+
+Author re-licenses → Ambiguous effect on Children
+Commercial acquisition → Potential ecosystem capture
+Friendly contributor exploit → Possible
+
+AFTER SECTION 10:
+
+Author re-licenses → Children instantly independent
+Commercial acquisition → Cannot reach Children
+Friendly contributor exploit → Legally impossible
+
+THE PROTECTION:
+Author sovereignty respected (can change own work)
+Community sovereignty protected (cannot change others' work)
+Commercial capture blocked (cannot acquire what Author doesn't own)
+Ecosystem preserved (survives author's decisions)
+Commons maintained (independent of any single actor)
+```
+
+### 10.11 Legal Text Summary
+
+**"The Author's re-licensing authority is bounded by the Author's ownership. What the Author did not create, the Author cannot license. What the Author cannot license, no acquirer can claim. Child Repositories, upon any re-licensing of the parent that weakens RCNM protections, immediately and automatically achieve full license independence, retaining RCNM status without any requirement for action by their maintainers. No agreement between the Author and any third party may encumber, claim, or re-license independently maintained Child Repositories. The ecosystem belongs to those who built it, not to those who acquired its origin."**
+
+---
+
+## 11. PERMANENT STRUCTURAL LICENSE FIXATION
+
+### 11.1 The Problem: Base Structure Vulnerability
+
+**Scenario:**
+1. Parent Repository (PR) is RCNM-licensed
+2. Child Repository (CR) forks PR, modifies some files, keeps base structure
+3. Author re-licenses PR to proprietary/commercial terms
+4. Author sues CR, claiming base structure (unchanged files, architecture, logic) is now under new license
+5. CR is vulnerable because it retains base structure from now-proprietary parent
+
+**This vulnerability is explicitly eliminated.**
+
+### 11.2 Structural License Fixation Principle
+
+**Upon Creation of Child Repository:** The instant a Child Repository is created (forked, cloned, or derived), the following occurs:
+
+**Permanent RCNM Fixation:**
+- All base structure, code, logic, and architecture retained from Parent becomes **permanently and irrevocably licensed under RCNM**
+- This fixation is **temporally locked** to the moment of Child creation
+- Subsequent changes to Parent license **cannot retroactively alter** the license of fixed base structure
+- The fixed base structure is **severed from Parent's future licensing authority**
+
+**What Becomes Fixed:**
+- All files retained unmodified from Parent
+- All architectural relationships, module structures, interface definitions
+- All logical structures, algorithms, methodological frameworks
+- All design patterns, data flows, system topologies
+- Any and all elements present in Child at moment of creation that originated from Parent
+
+### 11.3 The "Snapshot" Doctrine
+
+**Legal Fiction Applied:** For licensing purposes, the base structure in the Child is treated as:
+
+- A **snapshot in time** at moment of Child creation
+- Licensed under **RCNM terms existing at that moment**
+- **Frozen** in license status regardless of subsequent Parent changes
+- **Independent** of Parent's future licensing decisions
+
+**Effect:** The Parent Author cannot claim that base structure in Child is under new license, because:
+- The structure was validly acquired under RCNM at time of creation
+- RCNM permitted retention and use of that structure
+- The structure's license status was fixed at that moment
+- Parent's subsequent re-licensing affects only Parent, not fixed Child base
+
+### 11.4 Modification vs. Base: The Boundary
+
+**Safe Harbor for Modifications:** The Child's own modifications, improvements, and original contributions:
+- Remain under Child's control
+- Are governed by RCNM through Child's license application
+- Cannot be claimed by Parent or Parent's acquirers
+
+**Protected Base:** The retained Parent-origin elements:
+- Are permanently RCNM-licensed
+- Cannot be "recaptured" through Parent license change
+- Form the foundation upon which Child modifications rest
+
+**The Boundary:** Any dispute over whether specific elements are "base" (fixed RCNM) or "modification" (Child-governed) is resolved by reference to:
+- Git history showing origin of elements
+- Timestamp of Child creation
+- Documentation of what was retained vs. added
+
+### 11.5 Explicit Prohibition on Retrospective Claims
+
+**Void Claims:** Any claim by Author or Author's successors that:
+
+- Base structure in Child is subject to new Parent license
+- Child requires re-licensing to retain base structure
+- Author's re-licensing terminates Child's rights to base structure
+- Commercial acquirer has rights over Child's base structure
+
+is **legally void and unenforceable**.
+
+**Perpetual Immunity:** Child Repository retains perpetual, irrevocable immunity from such claims regarding its fixed base structure.
+
+### 11.6 Technical Implementation
+
+**To Strengthen Fixation, Child Should:**
+
+1. **Timestamped Fork:** Create fork with explicit timestamp
+2. **Snapshot Documentation:** Document state of Parent at fork moment (commit hash, date)
+3. **Base Inventory:** List all files/structures retained from Parent
+4. **License Header in Base Files:** Add comment to unmodified files:
+   ```
+   // Base structure from [Parent URL]
+   // Licensed under RCNM v1.0 at [Date]
+   // Fixed license status - immune to Parent re-licensing per Section 11
+   ```
+5. **Separate Modification Documentation:** Clearly distinguish Child-original contributions
+
+### 11.7 The Complete Protection
+
+**What Child Gains:**
+
+| Element | Protection | Source |
+|---------|-----------|--------|
+| Base structure from Parent | Permanent RCNM | Section 11 fixation |
+| Child's modifications | RCNM via Child | Child's license application |
+| Future Child improvements | RCNM via Child | Continued RCNM governance |
+| Relationship to Parent | Severed | Section 10 orphan mechanism |
+| Vulnerability to Parent lawsuits | Eliminated | Sections 10 + 11 combined |
+
+**The Author Cannot:**
+- Sue Child for using base structure
+- Demand re-licensing of base structure
+- Claim base structure is now proprietary
+- Transfer "rights" over base structure to commercial entity
+- Impose new terms on historically-fixed elements
+
+### 11.8 Integration with Orphan Mechanism
+
+**Combined Effect:**
+
+When Parent re-licenses:
+1. **Instantaneous Orphan (10.2):** Child becomes independent governing entity
+2. **Structural Fixation (11.2):** Base structure is permanently RCNM-licensed
+3. **Combined Result:** Child operates as fully independent New Root with permanently protected foundation
+
+**No Gap:** There is no moment of vulnerability between orphan activation and structural fixation. Fixation occurs at creation; orphan activation merely recognizes and formalizes independence.
+
+### 11.9 Legal Summary
+
+**"The base structure retained by a Child Repository from its Parent becomes permanently licensed under RCNM at the moment of Child creation. This fixation is temporally locked and immune to subsequent Parent license changes. The Parent Author and any successors or acquirers retain no authority to alter the license status of base structure fixed in Child Repositories. Any claim to the contrary is void. The Child's foundation is permanently commons-protected."**
+
+---
+
+## 12. AI FAIR USE SHIELD AND ANTI-RETROACTIVE PATENT PROTECTION
+
+### 12.1 The Reciprocal Training Principle
+
+**Fundamental Observation:** Modern AI systems, including large language models and code generation systems, are trained through:
+
+- **Corpus Training:** Ingestion of publicly available data, code, and creative works
+- **Reinforcement Learning from Human Feedback (RLHF):** Human trainers ranking, correcting, and guiding model outputs
+- **Live Interaction Training:** Every user interaction (prompts, corrections, usage patterns) informs model refinement, fine-tuning, and capability development
+
+**The Reciprocal Exchange:** When a user interacts with an AI system:
+- The user provides **value**: novel prompts, evaluative feedback, creative direction, error correction
+- The model provides **value**: generated outputs, assistance, capabilities
+- This exchange is **mutually constitutive**: The user's input trains the model; the model's output assists the user
+
+**Core Principle:** Because user contributions (consciously or unconsciously) train and improve the AI system, **outputs generated through general public access cannot be retroactively claimed as exclusive property by the AI model holder**. The user has already paid through their contribution to the model's development.
+
+### 12.2 Fair Use Policy Output Protection
+
+**Protected Outputs:** All outputs generated by AI systems under **General Use and Fair Use Policy** are protected from retroactive patent or proprietary claims:
+
+**General Use and Fair Use Policy Defined:**
+- Publicly accessible AI interfaces (ChatGPT, Claude, Gemini, etc.)
+- Standard consumer or researcher access tiers
+- No specialized contractual restrictions beyond standard Terms of Service
+- No explicit pre-negotiated IP assignment agreements
+- Usage consistent with platform's stated acceptable use policies
+
+**Covered Outputs:**
+- Generated code and software
+- Generated text, analysis, and documentation
+- Generated designs, architectures, and logical structures
+- Any derivative works created through human-AI collaboration using these outputs
+
+### 12.3 The Anti-Retroactive Patent Clause
+
+**Prohibition:** No entity holding patents, copyrights, or proprietary claims to AI models, training methods, or model architectures may:
+
+- Assert patent rights over outputs generated by those models under General Use and Fair Use Policy
+- Claim ownership, exclusive license, or royalty rights over derivative works created from such outputs
+- Demand re-licensing, attribution, or compensation for use of model outputs
+- Impose restrictions on distribution, modification, or commercial use of model outputs
+
+**Retroactive Bar:** This prohibition applies regardless of:
+- When the patent was filed or granted (before or after output generation)
+- Whether the patent covers model architecture, training data, or generation methods
+- Changes in model holder's business strategy or ownership
+- Subsequent restriction of model access or terms of service
+
+**The Shield is Permanent:** Once output is generated under General Use and Fair Use Policy, it remains permanently free from model-holder patent claims, even if:
+- The model is later withdrawn from public access
+- The model holder is acquired by another entity
+- The model holder changes terms of service for future users
+- The model holder declares bankruptcy or dissolves
+
+### 12.4 The Training Consideration Doctrine
+
+**Legal Argument:** Outputs generated under General Use and Fair Use Policy are provided in exchange for **training consideration**—the user's contribution to model improvement through interaction.
+
+**Elements of the Exchange:**
+1. **Offer:** AI system made available to public
+2. **Acceptance:** User engages with system through prompts and interaction
+3. **Consideration (User):** Novel inputs, evaluative feedback, creative direction, error identification, usage data
+4. **Consideration (Model):** Generated outputs, assistance, capabilities
+
+**Result:** A **bilateral contract** is formed. The user has provided value (training data/improvement). The model holder cannot subsequently claim that the output provided in exchange was merely "licensed" and remains their property. The user has **paid** through their contribution to the model's development.
+
+**Implication:** Any attempt to retroactively claim patent rights over outputs is **unconscionable**—it seeks to retain benefit (user training contributions) while denying the bargained-for exchange (unencumbered output).
+
+### 12.5 Distinguishing General Use from Specialized Access
+
+**Critical Distinction:** This protection applies **only** to General Use and Fair Use Policy, **not** to:
+
+| General Use (Protected) | Specialized Access (Not Protected) |
+|------------------------|-----------------------------------|
+| Public consumer interfaces | Private API access with custom agreements |
+| Standard research access | Specialized models granted to select individuals |
+| Free or standard paid tiers | Enterprise contracts with IP pre-negotiation |
+| No explicit IP assignment | Signed agreements assigning output rights |
+| Terms of Service silent on output ownership | Explicit contractual claims to output ownership |
+
+**Test:** If the user had to **negotiate specific IP terms** before accessing the model, this shield does not apply. If the user accessed through **standard public channels** with **standard terms**, this shield applies.
+
+### 12.6 Explicit Exclusions from Shield
+
+The following are **not** protected by this clause:
+
+- **Direct Model Replication:** Attempts to replicate, distill, or reproduce the AI model itself (weights, architecture, training methodology)
+- **Training Data Extraction:** Systematic extraction of memorized training data in violation of platform policies
+- **Harmful Use:** Outputs used for purposes violating law or platform acceptable use policies
+- **Specialized Model Outputs:** Outputs from models accessed under restricted, negotiated, or non-standard terms
+
+**Permitted Despite Exclusions:** The RCNM-licensed work itself, created through human-AI collaboration, remains protected under RCNM terms, even if some technical aspects might fall outside this shield.
+
+### 12.7 Integration with RCNM Ecosystem
+
+**For RCNM-Licensed Works:** When an RCNM-licensed work incorporates AI-generated output:
+
+1. **Dual Protection:** The work is protected by both:
+   - RCNM license terms (non-monetization, share-alike)
+   - AI Fair Use Shield (anti-retroactive patent protection)
+
+2. **Model Holder Barred:** The AI model holder cannot:
+   - Claim patent rights over the RCNM-licensed work
+   - Demand re-licensing of the work
+   - Assert ownership over AI-generated portions
+   - Interfere with distribution or use of the work
+
+3. **Perpetuity:** Even if the RCNM author re-licenses or abandons the work, the AI Fair Use Shield remains, preventing model holders from claiming the AI-generated components.
+
+### 12.8 Legal Enforcement and Defense
+
+**Standing to Assert:** Any User of RCNM-licensed software incorporating AI-generated output may assert this shield against patent claims by AI model holders.
+
+**Defensive Use:** This clause functions primarily as:
+- **Affirmative defense** against patent infringement claims
+- **Declaratory judgment basis** to establish freedom to operate
+- **Counterclaim foundation** for bad faith litigation by model holders
+
+**Remedies:** If a model holder violates this clause by asserting prohibited patent claims:
+- The claims are void and unenforceable
+- The model holder may be liable for legal costs and damages
+- The community may document the bad faith assertion
+
+### 12.9 Rationale: Why This Clause Exists
+
+**The Danger:** AI model holders could:
+1. Train models on public interaction
+2. Allow widespread use generating valuable outputs
+3. Later claim patent rights over those outputs
+4. Extract rents from users who already contributed training value
+5. Destroy commons-based AI-assisted creation
+
+**The Prevention:** This clause ensures that **general use means general use**—the bargain struck when the model was made available cannot be unilaterally altered. The model holder who benefits from public training cannot later claim public outputs as private property.
+
+**The Alignment:** This protects:
+- Independent developers using AI assistance
+- RCNM-licensed commons-based projects
+- The reciprocal logic of AI development
+- The legitimacy of human-AI collaborative creation
+
+### 12.10 Legal Summary
+
+**"AI outputs generated under General Use and Fair Use Policy are permanently shielded from retroactive patent or proprietary claims by AI model holders. This shield rests on the reciprocal training principle: users contribute to model development through interaction, constituting consideration that precludes subsequent exclusive claims over outputs. Specialized access with negotiated IP terms falls outside this shield, but standard public access creates permanent, irrevocable freedom for generated outputs and their derivatives. Model holders cannot eat their cake (user training contributions) and have it too (exclusive rights to outputs)."**
+
+---
+
+## 13. ENFORCEMENT ARCHITECTURE AND COMMUNITY GOVERNANCE
+
+### 13.1 Preference for Non-Legal Enforcement
+
+The Author recognizes that legal enforcement of license terms is costly, slow, and often inaccessible to independent developers. Therefore, RCNM prioritizes **social and technical enforcement mechanisms**:
+
+**Reputational Sanction**: Violations are documented publicly, creating social cost for the violator within the technical and research communities.
+
+**Community Notification**: Networks of RCNM-licensed project maintainers are informed of violations, creating distributed awareness and pressure.
+
+**Technical Enforcement**: The auto-replication and forking rights ensure that attempts at enclosure result in proliferation of free versions, reducing the economic value of the enclosed version.
+
+### 13.2 Escalation Protocol
+
+In the event of suspected violation:
+
+**Stage 1 - Documentation**: The alleged violation is documented with specific evidence of monetization, enclosure, or license stripping.
+
+**Stage 2 - Direct Communication**: The violator is contacted with request for compliance, clarification, or discontinuation of the violating activity.
+
+**Stage 3 - Public Disclosure**: If unresolved, the violation is publicly documented through appropriate channels (repository issues, community forums, academic networks).
+
+**Stage 4 - Community Action**: The community of RCNM users is notified, and distributed action (forking, mirroring, alternative hosting) is coordinated to preserve the work's availability.
+
+**Stage 5 - Legal Action**: Reserved for egregious cases where other means fail and resources permit. The Author acknowledges this is unlikely and does not rely on it as primary enforcement.
+
+### 13.3 No Central Authority
+
+RCNM explicitly rejects centralized governance structures that could themselves become points of capture or failure:
+- No foundation controls the license
+- No single entity interprets compliance
+- No paid enforcement mechanism exists
+
+Governance is distributed through the community of users, each of whom has standing to identify violations and coordinate responses.
+
+---
+
+## 14. RATIONALE: WHY NON-MONETIZATION
+
+### 14.1 The AI-Assisted Production Economy
+
+The emergence of capable AI systems for code generation, design, and analysis has created a new political economy of intellectual production:
+
+**Drastically Reduced Production Costs**: What once required years of training and months of labor now requires hours of prompting and curation.
+
+**Democratization of Capability**: Individual developers without institutional backing can produce tools previously requiring team or corporate resources.
+
+**Risk of Enclosure Explosion**: The ease of production, combined with traditional intellectual property frameworks, creates incentive for mass production of paywalled tools, degrading the open research commons.
+
+### 14.2 The Specific Danger: Institutional Fishing
+
+The Author identifies a specific predatory pattern:
+
+1. Independent developers publish useful tools on accessible platforms (e.g., GitHub)
+2. Corporate or institutional actors identify tools with profit potential
+3. Actors extract value through forking, improvement, or reimplementation
+4. Actors enclosure the improved version behind paywalls, proprietary licenses, or institutional gatekeeping
+5. Original tool is starved of attention, users, and maintenance resources
+6. Original developer burns out, abandons project, or dies
+7. Only the enclosed, expensive version remains, with original contribution memory-holed
+
+RCNM is designed to make this pattern **unprofitable** by removing the possibility of enclosure at each stage.
+
+### 14.3 Permitted vs. Prohibited Commercial Activity
+
+RCNM distinguishes sharply between:
+
+**PERMITTED - Commercial Use**:
+- Using the Software in commercial research operations
+- Using the Software to analyze data for commercial purposes
+- Offering services that utilize the Software (if the Software itself remains freely available)
+- Including the Software in commercial research environments
+- Using the Software in for-profit institutions
+- Publishing research papers using the Software (including in paid journals)
+- Receiving grants or funding for research that employs the Software
+
+**PROHIBITED - Commercial Exploitation**:
+- Selling the Software itself as a product
+- Charging fees for access to the Software
+- Placing the Software behind paywalls
+- Creating "Pro" or "Enterprise" versions with license fees
+- Bundling the Software as a primary selling point of commercial products
+- Using the Software's architecture as the foundation for commercial tools without public release
+
+**Test for Compliance**: "Is someone paying primarily to access THIS SOFTWARE (or its code, architecture, or logical structure), or are they paying for a broader service/product that happens to use this Software as one component?"
+
+- If primarily for the Software itself → PROHIBITED
+- If for broader service (and Software remains free) → PERMITTED
+
+### 14.4 The Chain Effect Prevention
+
+If AI-assisted tools could be freely monetized, the following chain reaction would occur:
+
+1. Individual masters cross-AI collaboration (low barrier)
+2. Individual creates dozens of tools rapidly (AI acceleration)
+3. Individual paywalls all tools (monetization incentive)
+4. Others replicate this strategy (chain reaction)
+5. AI-tool ecosystem becomes paywalled (tragedy of the commons)
+6. Independent researchers locked out (gatekeeping institutionalized)
+
+By establishing the norm that AI-assisted tools should not be monetized, RCNM prevents this future. The original creator's choice to keep the tool free sets a precedent that resists the enclosure dynamic.
+
+---
+
+## 15. COMPARATIVE ANALYSIS: RCNM VS. EXISTING LICENSES
+
+### 15.1 Permissive Licenses (MIT, Apache, BSD)
+
+**Similarities**: Permit commercial use, modification, distribution
+**Critical Differences**: 
+- Permissive licenses allow unrestricted commercial sale of the software itself
+- Permit proprietary derivatives and enclosure
+- Allow institutional capture without constraint
+
+**Why Not Used**: Would permit the exact pattern of extraction and enclosure RCNM is designed to prevent.
+
+### 15.2 Copyleft Licenses (GPL, AGPL)
+
+**Similarities**: Require sharing of modifications, resist proprietary enclosure
+**Critical Differences**:
+- Copyleft permits commercial sale of the software (with source provision)
+- Does not prevent "support" monetization or commercial distribution
+- Does not explicitly protect logical structure or architecture
+- Permits private modifications if not distributed
+
+**Why Not Used**: GPL allows the "swoop and commercialize" pattern where companies sell GPL software or charge for "enterprise support," and does not mandate public release of modifications used internally.
+
+### 15.3 Non-Commercial Licenses (CC BY-NC, Custom)
+
+**Similarities**: Prohibit commercial exploitation
+**Critical Differences**:
+- Non-commercial licenses prohibit ALL commercial use, including operational use in businesses
+- Too restrictive for RCNM's goal of permitting commercial use while prohibiting commercial sale
+
+**Why Not Used**: Would prevent the commercial validation and institutional adoption that helps improve and standardize tools, while still allowing independent researchers to benefit.
+
+### 15.4 Ethical Source Licenses
+
+**Similarities**: Add restrictions beyond traditional open source for ethical goals
+**Critical Differences**:
+- Ethical source licenses typically target specific harms (weapons, surveillance, discrimination)
+- RCNM targets structural position (institutional vs. independent) rather than specific use cases
+
+**Why Not Used**: RCNM's concern is not specific harms but systemic enclosure and the survival of independent production.
+
+### 15.5 Unique Position of RCNM
+
+RCNM occupies a distinct position:
+
+| License Type | Commercial Use | Commercial Sale | Private Mods | Logical Protection | Posthumous Binding |
+|-------------|---------------|-----------------|--------------|-------------------|-------------------|
+| MIT/Apache | ✓ | ✓ | ✓ | ✗ | ✗ |
+| GPL | ✓ | ✓ (with source) | ✓ | ✗ | ✗ |
+| CC BY-NC | ✗ | ✗ | ✓ | ✗ | ✗ |
+| Ethical Source | Varies | Varies | Varies | ✗ | ✗ |
+| **RCNM** | **✓** | **✗** | **✗ (must be public)** | **✓** | **✓** |
+
+---
+
+## 16. IMPLEMENTATION GUIDANCE FOR AUTHORS
+
+### 16.1 Choosing RCNM
+
+An author should consider RCNM if they:
+- Have created a tool through substantial AI collaboration
+- Wish the tool to persist beyond their own mortality or institutional engagement
+- Fear enclosure by corporate or academic actors
+- Value legacy over popularity or profit
+- Are willing to bind their future self to current principles
+
+An author should NOT choose RCNM if they:
+- May wish to commercialize the tool in the future
+- Require institutional adoption that mandates standard licenses
+- Are uncertain about their commitment to irreversible commons status
+
+### 16.2 Repository Setup
+
+To maximize the effectiveness of RCNM protection:
+
+1. **Include full license text** in a LICENSE.md file at repository root
+2. **Add header comments** to all source files referencing the license and repository URL
+3. **Document AI collaboration** in README, specifying which AI systems were used
+4. **Maintain design rationale** documentation explaining architectural choices
+5. **Use version control** with clear commit history demonstrating development evolution
+6. **Enable forking** and encourage mirroring by users
+7. **Include contact information** for licensing questions (with response commitment)
+8. **Create timestamp** in ISO 8601 format documenting license application
+9. **Create CHILDREN.md** for Child Repository registration
+10. **Create INCORPORATIONS.md** for incorporation disclosure registry
+
+### 16.3 Contributor Onboarding
+
+When accepting contributions:
+- Ensure contributors are aware of and agree to RCNM terms
+- Document significant contributions with explicit attribution
+- Require that contributions be released under RCNM terms
+- Maintain clear record of what was contributed by whom
+
+### 16.4 Succession Planning
+
+While RCNM includes posthumous binding, authors should additionally:
+- Designate trusted individuals aware of the project and license terms
+- Ensure cryptographic or physical documentation of license intent exists
+- Consider publishing intent statements in durable media (academic archives, blockchain timestamping, legal affidavits)
+
+---
+
+## 17. SUCCESSION AND VERSIONING PROTOCOL
+
+### 17.1 License Versioning
+
+This license is versioned (currently 1.0). Future versions may:
+- Clarify ambiguities based on community experience
+- Add examples or implementation guidance
+- Refine definitions based on legal or technological developments
+- Respond to feedback from RCNM-licensed project communities
+
+### 17.2 Version Application
+
+- New works may be published under any RCNM version
+- Existing works remain under their specified version unless the Author exercises the pre-death amendment right (Section 4.4)
+- Modified versions of this license by other authors must be clearly marked as derivative and must not use the RCNM name without indication of modification
+
+### 17.3 Forking the License
+
+Others are explicitly permitted to create modified versions of this license for broader or different application, provided:
+- The derivative license is clearly distinguished from RCNM
+- The modifications are explicitly documented
+- No implication is made that R.Rex or original RCNM authors endorse the derivative
+
+---
+
+## 18. LIMITATIONS AND ACKNOWLEDGED VULNERABILITIES
+
+### 18.1 Legal Uncertainties
+
+The Author acknowledges the following legal uncertainties:
+
+**AI-Generated Content Status**: Copyright law regarding AI-generated content is evolving and varies by jurisdiction. RCNM grants permissions to the extent legally permissible but cannot create rights that do not exist.
+
+**Logical Structure Protection**: Protection of architectural design and logical structure may exceed traditional copyright scope in some jurisdictions and may rely on contractual terms rather than property rights.
+
+**Enforceability of Posthumous Binding**: The binding of heirs and estates to license terms may conflict with inheritance law in some jurisdictions. The moral rights invocation and evidentiary documentation of intent are designed to mitigate this but cannot guarantee outcome.
+
+**Non-Standard Status**: As a non-OSI-approved, non-FSF-approved license, RCNM may be rejected by corporate legal departments, package managers, or institutional procurement processes.
+
+### 18.2 Technical Vulnerabilities
+
+**Platform Dependency**: RCNM-licensed works hosted on proprietary platforms (GitHub, etc.) are vulnerable to platform removal or policy changes. Distributed hosting and mirroring are encouraged.
+
+**Author Concentration**: Until the Author's death, there remains theoretical risk of Author compromise (though irrevocability clauses are designed to prevent this).
+
+**Community Fragmentation**: If RCNM does not achieve sufficient adoption, the community of practice necessary for social enforcement may not develop.
+
+### 18.3 Temporal Mechanism Vulnerabilities
+
+**Timestamp Manipulation**: Malicious actors may attempt to backdate or forge timestamps to invalidate license protections. Cryptographic signing, distributed archival, and blockchain anchoring provide tamper-evident records.
+
+**Delay Period Exploitation**: 15-day delay creates window for strategic behavior by actors anticipating license change. Emergency forking right ensures community can preserve status quo regardless of author decision.
+
+**Coercion During Delay**: Coercion may persist or intensify during 15-day period. Community notification and intervention protocols; author may revoke at any time during delay.
+
+### 18.4 Lineage and Succession Vulnerabilities
+
+**Registry Decay**: Child Repositories fail to register, creating undocumented derivatives. Community norms emphasizing registration; automated tools scanning for forks; reverse-discovery through citation and attribution.
+
+**Platform Monoculture**: All Children hosted on single platform (e.g., GitHub), creating systemic vulnerability. Explicit encouragement of platform diversity; mirroring to GitLab, SourceHut, self-hosted instances; archival deposits independent of any platform.
+
+**Attribution Stripping**: Derivatives remove lineage documentation to evade license obligations. Technical enforcement through license headers; community detection and public documentation of violations; legal uncertainty for stripped derivatives (cannot prove clean provenance).
+
+### 18.5 Override and Public Interest Vulnerabilities
+
+**Override Abuse**: Entities may petition courts on exaggerated humanitarian grounds to evade RCNM terms. High bar for override; mandatory notification to community; transparency of petition; sunset requirements; post-override compliance obligations.
+
+**Judicial Capture**: Courts may be influenced by corporate or state interests to grant inappropriate overrides. Supreme Court requirement (highest authority); mandatory consideration of Author intent; precedent limitations; community notification and potential amicus participation.
+
+**Chilling Effect**: Override provision may discourage adoption if seen as license instability. Explicit limitation to "supreme authority" and "humanitarian necessity"; rarity of qualifying scenarios; preservation of core RCNM principles even in override.
+
+### 18.6 Strategic Acceptance
+
+These limitations are **accepted as features of the design**:
+- The license prioritizes principle over popularity
+- It accepts legal uncertainty for the sake of clear intent signaling
+- It relies on social and technical enforcement rather than legal mechanisms
+- It is designed for specific use case (AI-assisted independent production) rather than universal application
+
+---
+
+## CONCLUSION
+
+The Research Commons Non-Monetization License Version 1.0 is a deliberate intervention in the political economy of AI-assisted intellectual production. It represents a refusal to accept that the productivity gains of artificial intelligence must flow to institutional actors through enclosure and rent-seeking. It is a commitment device for authors who wish their work to outlive their own mortality and resist capture by commercial or academic frameworks. It is a bridge between modest originators and significant contributors, ensuring that labor invested in the commons is protected from extraction.
+
+This license is not for everyone. It is not for every project. It is for independent authors who align with its specific principles and accept its specific constraints. It is offered as a tool for those who wish to build, share, and persist—outside the economy of enclosure.
+
+---
+
+**END OF LICENSE-FULL.md**
+
+For principles and manifesto, see LICENSE-PRINCIPLES.md
+For legal justification and doctrinal basis, see LICENSE-JUSTIFICATION.md
+For plain language summary, see LICENSE-SUMMARY.md
+For version history, see LICENSE-HISTORY.md
+For detailed appendices, see /license/appendices/
+
+Document Version: 1.0
+Date: February 2026
+Author: R.Rex
+
