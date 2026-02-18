@@ -1,6 +1,13 @@
-# RESEARCH COMMONS NON-MONETIZATION LICENSE (RCNM)
-## Version 1.0 | February 2026
-### Copyright (c) 2026 R.Rex
+# Research Commons Non-Monetization License (RCNM-1.0)
+
+SPDX-License-Identifier: LicenseRef-RCNM-1.0  
+Version: 1.0  
+Status: Custom Research License  
+Author: R.Rex  
+Project: ChatGPT-DialogueMetrics  
+Year: 2026  
+
+This license governs the use, modification, and distribution of this software and associated artifacts.
 
 ---
 
