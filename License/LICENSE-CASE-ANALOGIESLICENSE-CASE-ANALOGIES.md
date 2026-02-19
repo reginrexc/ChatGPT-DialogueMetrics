@@ -35,6 +35,14 @@ This document identifies **established legal cases** that **support, illuminate,
 | **RCNM Analogy** | Author's promise of perpetual commons access creates enforceable expectation |
 | **Support Level** | Illuminating analogy for promissory obligations |
 
+#### Case: *Wood v. Lucy, Lady Duff-Gordon*, 222 N.Y. 88 (1917)
+| Attribute | Detail |
+|-----------|--------|
+| **Jurisdiction** | United States, New York Court of Appeals (Cardozo, J.) |
+| **Holding** | Contracts imply obligations of good faith and fair dealing; implied promise to use reasonable efforts; reciprocal obligations bind parties even when not explicitly stated |
+| **RCNM Analogy** | Author's release under RCNM implies obligation not to undermine commons through re-licensing; community's reliance creates reciprocal obligation of license stability |
+| **Support Level** | Supporting precedent for implied contractual obligations and good faith dealing |
+
 ---
 
 ### Section 4.3: Posthumous Binding
@@ -46,6 +54,14 @@ This document identifies **established legal cases** that **support, illuminate,
 | **Holding** | Testator's intent binds estate; heirs cannot defeat clear testamentary purpose |
 | **RCNM Analogy** | Author's intent for license permanence binds successors |
 | **Support Level** | Supporting precedent for testamentary intent binding heirs |
+
+#### Case: *Lynch v. United States*, 292 U.S. 571 (1934)
+| Attribute | Detail |
+|-----------|--------|
+| **Jurisdiction** | United States, Supreme Court |
+| **Holding** | Vested contractual rights cannot be divested by subsequent legislation; Congress cannot retroactively impair valid contracts |
+| **RCNM Analogy** | RCNM license creates vested rights in users; author cannot retroactively impair those rights through re-licensing |
+| **Support Level** | Supporting precedent for protection of vested contractual rights |
 
 #### Case: *Edwards v. Lee's Administrator*, 96 S.W.2d 1028 (Ky. 1936)
 | Attribute | Detail |
@@ -93,6 +109,14 @@ This document identifies **established legal cases** that **support, illuminate,
 | **RCNM Analogy** | Inalienable moral rights support irrevocable license terms |
 | **Support Level** | Strong supporting precedent (Germany has strong moral rights) |
 
+#### Case: *Berne Convention for the Protection of Literary and Artistic Works*, Article 6bis (1928, revised 1971)
+| Attribute | Detail |
+|-----------|--------|
+| **Jurisdiction** | International treaty, 181 signatories |
+| **Holding** | Moral rights (attribution and integrity) recognized independently of economic rights; persist after transfer; may persist after author's death per national legislation |
+| **RCNM Analogy** | Moral rights framework supports posthumous license integrity; author's intent for commons dedication protected by moral rights doctrine |
+| **Support Level** | Foundational international treaty establishing moral rights regime |
+
 ---
 
 ## PART III: CONTRACTUAL RESTRICTIONS AND COVENANTS
@@ -122,6 +146,14 @@ This document identifies **established legal cases** that **support, illuminate,
 | **Holding** | License terms enforceable even if user did not negotiate; copyright owner can impose conditions |
 | **RCNM Analogy** | RCNM terms enforceable as license conditions |
 | **Support Level** | Strong supporting precedent for license enforceability |
+
+#### Case: *Jacobsen v. Katzer*, 535 F.3d 1373 (Fed. Cir. 2008)
+| Attribute | Detail |
+|-----------|--------|
+| **Jurisdiction** | United States, Federal Circuit Court of Appeals |
+| **Holding** | Open source license conditions are enforceable as contractual terms; violation is breach of contract not just copyright infringement; attribution requirements are material terms |
+| **RCNM Analogy** | RCNM conditions (non-monetization, attribution, share-alike) are enforceable contract terms; violation gives rise to contract remedies |
+| **Support Level** | Strong supporting precedent for open source license enforceability |
 
 ---
 
@@ -153,6 +185,38 @@ This document identifies **established legal cases** that **support, illuminate,
 | **RCNM Analogy** | AI systems have substantial non-infringing uses; user output generation is legitimate |
 | **Support Level** | Illuminating analogy for technology legitimacy |
 
+#### Case: *Perfect 10, Inc. v. Amazon.com, Inc.*, 508 F.3d 1146 (9th Cir. 2007)
+| Attribute | Detail |
+|-----------|--------|
+| **Jurisdiction** | United States, Ninth Circuit Court of Appeals |
+| **Holding** | Thumbnail images for search engine were transformative fair use; different purpose from original; public benefit weighs in favor of fair use |
+| **RCNM Analogy** | AI transformation of training data into outputs serves different purpose; user's use of outputs serves yet another purpose; transformative use applies at each step |
+| **Support Level** | Supporting precedent for multi-stage transformative use |
+
+#### Case: *Campbell v. Acuff-Rose Music, Inc.*, 510 U.S. 569 (1994)
+| Attribute | Detail |
+|-----------|--------|
+| **Jurisdiction** | United States, Supreme Court |
+| **Holding** | Parody is transformative fair use; commercial nature does not preclude fair use; transformative purpose is central to fair use analysis |
+| **RCNM Analogy** | If AI training is transformative fair use, then user output use is equally transformative; commercial use does not preclude fair use application |
+| **Support Level** | Strong supporting precedent for transformative use doctrine and fair use parity |
+
+#### Case: *Quanta Computer, Inc. v. LG Electronics, Inc.*, 553 U.S. 617 (2008)
+| Attribute | Detail |
+|-----------|--------|
+| **Jurisdiction** | United States, Supreme Court |
+| **Holding** | First authorized sale exhausts patent rights; patentee cannot impose restrictions on post-sale use through patent law |
+| **RCNM Analogy** | AI model holder's patent rights exhausted when output is generated through authorized general use; cannot assert patent claims over outputs from publicly available systems |
+| **Support Level** | Strong supporting precedent for patent exhaustion doctrine (Section 17.3) |
+
+#### Case: *Impression Products, Inc. v. Lexmark International, Inc.*, 137 S. Ct. 1523 (2017)
+| Attribute | Detail |
+|-----------|--------|
+| **Jurisdiction** | United States, Supreme Court |
+| **Holding** | Patent exhaustion applies even when sale is abroad; patentee cannot impose post-sale restrictions through patent law; first sale ends patent holder's ability to control article |
+| **RCNM Analogy** | Model holder cannot use patent law to impose restrictions on AI outputs after authorized generation; making AI publicly available exhausts control over outputs |
+| **Support Level** | Very strong supporting precedent (recent Supreme Court, unambiguous holding) |
+
 ---
 
 ### Section 17.11: Conditional Consent Doctrine
@@ -179,6 +243,22 @@ This document identifies **established legal cases** that **support, illuminate,
 
 ### Section 10: Instantaneous Orphan Mechanism
 
+#### Case: *Bobbs-Merrill Co. v. Straus*, 210 U.S. 339 (1908)
+| Attribute | Detail |
+|-----------|--------|
+| **Jurisdiction** | United States, Supreme Court |
+| **Holding** | First sale doctrine established; copyright owner's rights exhausted after first authorized sale; purchaser may resell without restriction |
+| **RCNM Analogy** | Child Repository creator acquires rights under RCNM at moment of fork/creation; parent author's subsequent re-licensing cannot retroactively revoke those vested rights |
+| **Support Level** | Foundational supporting precedent for first sale doctrine and vested rights (Section 16.11) |
+
+#### Case: *Kirtsaeng v. John Wiley & Sons, Inc.*, 568 U.S. 519 (2013)
+| Attribute | Detail |
+|-----------|--------|
+| **Jurisdiction** | United States, Supreme Court |
+| **Holding** | First sale doctrine applies to copies lawfully made abroad; rights vest at moment of lawful acquisition; copyright owner cannot use distribution right to control post-acquisition use |
+| **RCNM Analogy** | Rights under RCNM vest at moment child repository is created; parent's subsequent re-licensing cannot impair vested rights; structural fixation locks license status at creation moment |
+| **Support Level** | Very strong supporting precedent (recent Supreme Court affirmation of vested rights) |
+
 #### Case: *Step-Saver Data Systems v. Wyse Technology*, 939 F.2d 91 (3d Cir. 1991)
 | Attribute | Detail |
 |-----------|--------|
@@ -194,6 +274,14 @@ This document identifies **established legal cases** that **support, illuminate,
 | **Holding** | First sale doctrine limits copyright owner's control after authorized transfer |
 | **RCNM Analogy** | Author's control terminates at Child creation; subsequent re-licensing cannot recall rights |
 | **Support Level** | Illuminating analogy for termination of control |
+
+#### Case: *Stewart v. Abend*, 495 U.S. 207 (1990)
+| Attribute | Detail |
+|-----------|--------|
+| **Jurisdiction** | United States, Supreme Court |
+| **Holding** | Derivative work creator's rights are independent of underlying work; termination of underlying license doesn't automatically terminate derivative rights; derivative creator has independently cognizable interests |
+| **RCNM Analogy** | Child Repository creators have independent rights in their modifications; parent's re-licensing doesn't automatically terminate child's independent interests; orphan mechanism recognizes this independence |
+| **Support Level** | Supporting precedent for derivative work independence and severability of rights |
 
 ---
 
