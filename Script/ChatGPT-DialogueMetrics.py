@@ -18,9 +18,15 @@ Enhanced version with:
 - NEW v3.1: Two-file output with global and per-thread matrices
 - NEW v3.2: System Boundary & Refusals, Information Efficiency, Lexical Mirroring, Cognitive Asymmetry
 
-Author: Enhanced from original by Claude (Anthropic)
-Version: 3.2
-License: MIT (Open Source)
+Research Commons Non-Monetization License (RCNM-1.0)
+
+SPDX-License-Identifier: LicenseRef-RCNM-1.0  
+Version: 1.0  
+Status: Custom Research License  
+Author: R.Rex (Collaborated with ChatGPT, Claude, Kimi, Deepseek, Gemini)
+Project: ChatGPT-DialogueMetrics  
+Year: 2026  
+
 """
 
 import json
@@ -1716,7 +1722,7 @@ with pd.ExcelWriter(main_output_file, engine="xlsxwriter") as main_writer, \
         "Adapted from: [R.Rex] extended by ChatGPT (OpenAI), Claude (Anthropic), Kimi (Moonshot AI), DeepSeek (DeepSeek AI) and Gemini (Google DeepMind)",
         f"Generated: {datetime.now().strftime('%Y-%m-%d')}",
         "",
-        "LICENSE: MIT (Open Source)",
+        "LICENSE: Research Commons Non-Monetization License (RCNM-1.0)",
         "",
         "=" * 80,
         "",
