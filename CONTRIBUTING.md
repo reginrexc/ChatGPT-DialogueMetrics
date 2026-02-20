@@ -45,7 +45,7 @@ This project is licensed under the **Research Commons Non-Monetization License (
 
 **By contributing, you agree that your contributions will be licensed under RCNM v1.0.**
 
-Read the full license: [License/LICENSE.md](License/LICENSE.md)
+Read the full license: [License/LICENSE-FULL.md](License/LICENSE-FULL.md)
 
 ---
 
