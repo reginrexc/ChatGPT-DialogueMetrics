@@ -52,8 +52,8 @@ tokenizer = tiktoken.get_encoding("cl100k_base")
 # === Configuration ===
 input_file = "chat.json"  # Your ChatGPT export file
 timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-main_output_file = f"chat_analysis_{timestamp_str}.xlsx"          # v3.0 main output
-matrix_output_file = f"chat_matrices_{timestamp_str}.xlsx"        # v3.1 matrix output
+main_output_file = f"gpt_analysis_{timestamp_str}.xlsx"          # v3.0 main output
+matrix_output_file = f"gpt_matrices_{timestamp_str}.xlsx"        # v3.1 matrix output
 
 # === Enhanced Stopwords (expanded) ===
 stopwords = set([
@@ -942,6 +942,11 @@ def detect_response_edits(messages):
 # === MAIN PROCESSING ===
 print("=" * 80)
 print("ChatGPT-DialogueMetrics v3.2")
+print("SPDX-License-Identifier: LicenseRef-RCNM-1.0")  
+print("Version: 1.0")
+print("Status: Custom Research License")
+print("Author: R.Rex (Collaborated with ChatGPT, Claude, Kimi, Deepseek, & Gemini)")
+print("Year: 2026")  
 print("=" * 80)
 print(f"\nLoading: {input_file}")
 
@@ -1546,10 +1551,7 @@ with pd.ExcelWriter(main_output_file, engine="xlsxwriter") as main_writer, \
         process_notes.append(f"✅ '{title}' -> {len(df)} messages analyzed")
     
     # === Thread Summary Sheet (main output) ===
-    print("\n" + "=" * 80)
-    print("CREATING SUMMARY SHEET (main output)")
-    print("=" * 80)
-    
+
     summary_df = pd.DataFrame(summary_rows)
     summary_df.to_excel(main_writer, sheet_name="Thread Summary", index=False)
     summary_ws = main_writer.sheets["Thread Summary"]
@@ -1751,52 +1753,74 @@ with pd.ExcelWriter(main_output_file, engine="xlsxwriter") as main_writer, \
         f"- Refusal Markers",
     ]
     
-    for row_idx, line in enumerate(methodology_text):
-        notes_ws.write(row_idx, 0, line)
-    
     # =============================================================================
-    # WRITE MATRIX OUTPUT FILE (unchanged from v3.1)
+    # WRITE MATRIX OUTPUT FILE (with guaranteed sheets, back links, and freeze panes)
     # =============================================================================
     print("\n" + "=" * 80)
     print("WRITING MATRIX ANALYSIS FILE")
+    print("\n" + "=" * 80)
+    print("\n".join(process_notes))
+    print(f"\n✅ Main analysis exported to: {main_output_file}")
+    print(f"📊 Matrix analysis exported to: {matrix_output_file}")
+    print(f"📊 Total messages analyzed: {summary_df['Total Messages'].sum():,}")
+    print("\n📖 See methodology notes in main file for details.")
     print("=" * 80)
-    
-    # --- 1. Global act transition matrices ---
-    all_acts = sorted(set(global_act_counts.keys()).union(*[d.keys() for d in global_act_counts.values()]))
-    # Counts matrix
-    global_counts_df = pd.DataFrame(0, index=all_acts, columns=all_acts)
-    for from_act, to_dict in global_act_counts.items():
-        for to_act, cnt in to_dict.items():
-            global_counts_df.loc[from_act, to_act] = cnt
-    global_counts_df.to_excel(matrix_writer, sheet_name="Global_Act_Counts")
-    
-    # Probabilities matrix
-    global_prob_df = global_counts_df.div(global_counts_df.sum(axis=1), axis=0).fillna(0)
-    global_prob_df.to_excel(matrix_writer, sheet_name="Global_Act_Prob")
-    
+
+    matrix_sheets = []  # track sheets for summary
+
+    # --- 1. Global act transition matrices (if any data) ---
+    if global_act_counts:
+        all_acts = sorted(set(global_act_counts.keys()).union(*[d.keys() for d in global_act_counts.values()]))
+        # Counts matrix
+        global_counts_df = pd.DataFrame(0, index=all_acts, columns=all_acts)
+        for from_act, to_dict in global_act_counts.items():
+            for to_act, cnt in to_dict.items():
+                global_counts_df.loc[from_act, to_act] = cnt
+        sheet_name = "Global_Act_Counts"
+        global_counts_df.to_excel(matrix_writer, sheet_name=sheet_name)
+        ws = matrix_writer.sheets[sheet_name]
+        ws.write_url('A1', "internal:'Summary'!A1", string="⬅ BACK TO SUMMARY")
+        ws.freeze_panes(1, 1)  # Freeze top row and first column
+        matrix_sheets.append((sheet_name, "Global dialogue act transition counts"))
+
+        # Probabilities matrix
+        global_prob_df = global_counts_df.div(global_counts_df.sum(axis=1), axis=0).fillna(0)
+        sheet_name = "Global_Act_Prob"
+        global_prob_df.to_excel(matrix_writer, sheet_name=sheet_name)
+        ws = matrix_writer.sheets[sheet_name]
+        ws.write_url('A1', "internal:'Summary'!A1", string="⬅ BACK TO SUMMARY")
+        ws.freeze_panes(1, 1)
+        matrix_sheets.append((sheet_name, "Global dialogue act transition probabilities"))
+
     # --- 2. Global correlation matrix ---
     if all_messages_list:
         global_all_df = pd.DataFrame(all_messages_list)
         global_numeric = global_all_df.select_dtypes(include=[np.number])
-        # Exclude any unwanted columns (e.g., index-like)
         global_numeric = global_numeric.loc[:, ~global_numeric.columns.str.contains('Seq', case=False)]
         if global_numeric.shape[1] > 1:
             global_corr = global_numeric.corr()
-            global_corr.to_excel(matrix_writer, sheet_name="Global_Correlation")
-            # Apply conditional formatting for heatmap
-            corr_ws = matrix_writer.sheets["Global_Correlation"]
-            corr_ws.conditional_format(1, 1, len(global_corr), len(global_corr),
-                                       {'type': '3_color_scale',
-                                        'min_color': "#F8696B",   # red for -1
-                                        'mid_color': "#FFEB84",   # yellow for 0
-                                        'max_color': "#63BE7B"})  # green for 1
+            sheet_name = "Global_Correlation"
+            global_corr.to_excel(matrix_writer, sheet_name=sheet_name)
+            ws = matrix_writer.sheets[sheet_name]
+            ws.write_url('A1', "internal:'Summary'!A1", string="⬅ BACK TO SUMMARY")
+            ws.freeze_panes(1, 1)
+            matrix_sheets.append((sheet_name, "Global cross‑metric correlation matrix"))
+            # Apply conditional formatting
+            ws.conditional_format(1, 1, len(global_corr), len(global_corr),
+                                  {'type': '3_color_scale',
+                                   'min_color': "#F8696B",
+                                   'mid_color': "#FFEB84",
+                                   'max_color': "#63BE7B"})
         else:
-            # Write placeholder if insufficient columns
-            pd.DataFrame().to_excel(matrix_writer, sheet_name="Global_Correlation")
-    
+            sheet_name = "Global_Correlation"
+            pd.DataFrame().to_excel(matrix_writer, sheet_name=sheet_name)
+            ws = matrix_writer.sheets[sheet_name]
+            ws.write_url('A1', "internal:'Summary'!A1", string="⬅ BACK TO SUMMARY")
+            ws.freeze_panes(1, 1)
+            matrix_sheets.append((sheet_name, "Insufficient data for global correlation"))
+
     # --- 3. Per-thread matrices ---
     for thread_name in thread_act_counts:
-        # Act transition for this thread
         acts = sorted(set(thread_act_counts[thread_name].keys()).union(*[d.keys() for d in thread_act_counts[thread_name].values()]))
         if acts:
             # Counts
@@ -1804,14 +1828,22 @@ with pd.ExcelWriter(main_output_file, engine="xlsxwriter") as main_writer, \
             for from_act, to_dict in thread_act_counts[thread_name].items():
                 for to_act, cnt in to_dict.items():
                     thread_counts_df.loc[from_act, to_act] = cnt
-            sheet_name_counts = f"{thread_name}_ActCounts"[:31]  # Excel sheet name max 31 chars
+            sheet_name_counts = f"{thread_name}_ActCounts"[:31]
             thread_counts_df.to_excel(matrix_writer, sheet_name=sheet_name_counts)
-            
+            ws = matrix_writer.sheets[sheet_name_counts]
+            ws.write_url('A1', "internal:'Summary'!A1", string="⬅ BACK TO SUMMARY")
+            ws.freeze_panes(1, 1)
+            matrix_sheets.append((sheet_name_counts, f"Act counts for thread: {thread_name}"))
+
             # Probabilities
             thread_prob_df = thread_counts_df.div(thread_counts_df.sum(axis=1), axis=0).fillna(0)
             sheet_name_prob = f"{thread_name}_ActProb"[:31]
             thread_prob_df.to_excel(matrix_writer, sheet_name=sheet_name_prob)
-        
+            ws = matrix_writer.sheets[sheet_name_prob]
+            ws.write_url('A1', "internal:'Summary'!A1", string="⬅ BACK TO SUMMARY")
+            ws.freeze_panes(1, 1)
+            matrix_sheets.append((sheet_name_prob, f"Act probabilities for thread: {thread_name}"))
+
         # Correlation for this thread
         if thread_name in thread_numeric_data:
             numeric_df = thread_numeric_data[thread_name]
@@ -1819,39 +1851,73 @@ with pd.ExcelWriter(main_output_file, engine="xlsxwriter") as main_writer, \
                 corr = numeric_df.corr()
                 sheet_name_corr = f"{thread_name}_Corr"[:31]
                 corr.to_excel(matrix_writer, sheet_name=sheet_name_corr)
-                # Apply conditional formatting
-                ws_corr = matrix_writer.sheets[sheet_name_corr]
-                ws_corr.conditional_format(1, 1, len(corr), len(corr),
-                                           {'type': '3_color_scale',
-                                            'min_color': "#F8696B",
-                                            'mid_color': "#FFEB84",
-                                            'max_color': "#63BE7B"})
-    
-    # Optional: add a short readme sheet in matrix file
+                ws = matrix_writer.sheets[sheet_name_corr]
+                ws.write_url('A1', "internal:'Summary'!A1", string="⬅ BACK TO SUMMARY")
+                ws.freeze_panes(1, 1)
+                matrix_sheets.append((sheet_name_corr, f"Correlation matrix for thread: {thread_name}"))
+                ws.conditional_format(1, 1, len(corr), len(corr),
+                                      {'type': '3_color_scale',
+                                       'min_color': "#F8696B",
+                                       'mid_color': "#FFEB84",
+                                       'max_color': "#63BE7B"})
+
+    # --- 4. Create Summary Sheet with hyperlinks in the "Sheet Name" column ---
+    if matrix_sheets:
+        # Prepare data as plain text first (we'll overwrite the Sheet Name column with formulas)
+        summary_data = []
+        for idx, (sheet_name, description) in enumerate(matrix_sheets, start=1):
+            summary_data.append({
+                "#": idx,
+                "Sheet Name": sheet_name,  # placeholder, will be replaced by hyperlink
+                "Description": description
+            })
+        summary_df = pd.DataFrame(summary_data)
+        summary_df.to_excel(matrix_writer, sheet_name="Summary", index=False)
+
+        summary_ws = matrix_writer.sheets["Summary"]
+        # Freeze header row (row 0) and first column (col 0) – optional but consistent
+        summary_ws.freeze_panes(1, 1)
+        summary_ws.set_row(0, None, header_fmt_matrix)
+        summary_ws.set_column(0, 0, 5, center_fmt_matrix)   # # column
+        summary_ws.set_column(1, 1, 35)                     # Sheet Name column (will be hyperlinks)
+        summary_ws.set_column(2, 2, 50)                     # Description column
+
+        # Overwrite the "Sheet Name" cells (column B, starting from row 2) with HYPERLINK formulas
+        for i, row in enumerate(summary_data, start=2):  # row 1 is header, data rows start at 2
+            sheet_name = row["Sheet Name"]
+            # Write formula: =HYPERLINK("#'sheetname'!A1", "sheetname")
+            formula = f'=HYPERLINK("#\'{sheet_name}\'!A1", "{sheet_name}")'
+            summary_ws.write_formula(i, 1, formula)  # column B (index 1)
+
+    # --- 5. Always create a README sheet (even if no other sheets) ---
     readme = [
         "MATRIX ANALYSIS FILE",
         "====================",
         "This file contains global and per-thread matrices.",
-        "",
-        "- Global_Act_Counts / Prob: dialogue act transitions across all threads.",
-        "- Global_Correlation: Pearson correlation of all numeric metrics across all messages.",
-        "- For each thread:",
-        "    * <Thread>_ActCounts / Prob: act transition matrices for that thread.",
-        "    * <Thread>_Corr: correlation matrix for that thread (if enough data).",
-        "",
-        "Note: Sheet names are truncated to 31 characters."
     ]
+    if not matrix_sheets:
+        readme.append("")
+        readme.append("No matrix data was generated. Possible reasons:")
+        readme.append("- No conversations were processed (check input file)")
+        readme.append("- No dialogue acts were classified")
+        readme.append("- No numeric data available for correlation")
+    else:
+        readme.append("")
+        readme.append("Use the 'Summary' sheet for easy navigation.")
+        readme.append("")
+        readme.append("- Global_Act_Counts / Prob: dialogue act transitions across all threads.")
+        readme.append("- Global_Correlation: Pearson correlation of all numeric metrics across all messages.")
+        readme.append("- For each thread:")
+        readme.append("    * <Thread>_ActCounts / Prob: act transition matrices for that thread.")
+        readme.append("    * <Thread>_Corr: correlation matrix for that thread (if enough data).")
+    readme.append("")
+    readme.append("Note: Sheet names are truncated to 31 characters.")
+
     readme_ws = workbook_matrix.add_worksheet("README")
     for i, line in enumerate(readme):
         readme_ws.write(i, 0, line)
     readme_ws.set_column(0, 0, 80)
-
-print("\n" + "=" * 80)
-print("ANALYSIS COMPLETE")
-print("=" * 80)
-print("\n".join(process_notes))
-print(f"\n✅ Main analysis exported to: {main_output_file}")
-print(f"📊 Matrix analysis exported to: {matrix_output_file}")
-print(f"📊 Total messages analyzed: {summary_df['Total Messages'].sum():,}")
-print("\n📖 See methodology notes in main file for details.")
-print("=" * 80)
+    # Add a back link from README to Summary (if Summary exists)
+    if matrix_sheets:
+        readme_ws.write_url('A1', "internal:'Summary'!A1", string="⬅ BACK TO SUMMARY")
+    readme_ws.freeze_panes(1, 1)  # Freeze top row and first column for README too
