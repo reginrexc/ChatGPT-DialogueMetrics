@@ -23,8 +23,9 @@ So this is **not** a linguistic tokenizer; it is whitespace-based.
 ### 2. Token Count
 
 $$
-T = |\operatorname{Tokenizer}(text)|
+T = \left\vert \text{Tokenizer}(\text{text}) \right\vert
 $$
+
 
 The script uses:
 
@@ -43,7 +44,7 @@ That should be explicitly documented.
 ### 3. Sentence Count
 
 $$
-S = |\operatorname{split}(text,\ [.!?]+)|
+S = \left\vert \text{split}(\text{text}, \text{ [.!?]+}) \right\vert
 $$
 
 The script splits on `.`, `!`, and `?`. 
@@ -217,7 +218,7 @@ These are **marker-count metrics**, not semantic contradiction equations.
 For each contradiction category $k$:
 
 $$
-C_k = \operatorname{RegexCount}(pattern_k,text)
+C_k = \text{RegexCount}(\text{pattern}_k, \text{text})
 $$
 
 Total:
@@ -264,21 +265,13 @@ This is worth changing eventually to `NaN` because infinity can distort downstre
 For each elaboration category:
 
 $$
-E_k=\operatorname{RegexCount}(pattern_k,text)
+\Large \mathbf{\mathsf{E}}_k = \textbf{\textsf{RegexCount}}(\textbf{\textsf{pattern}}_k, \textbf{\textsf{text}})
 $$
 
 Total:
 
 $$
-\boxed{
-E_{total}
-=
-E_{causation}
-+E_{explanation}
-+E_{expansion}
-+E_{consequence}
-+E_{exemplification}
-}
+E_{\text{total}} = E_{\text{causation}} + E_{\text{explanation}} + E_{\text{expansion}} + E_{\text{consequence}} + E_{\text{exemplification}}
 $$
 
 The five categories are explicitly defined in the code. 
@@ -656,11 +649,11 @@ $$
 ### 33. Urgency Level
 
 $$
-Urgency=
-\begin{cases}
-High & U>2\\
-Medium & 0<U\le2\\
-Low & U=0
+\text{Urgency} = 
+\begin{cases} 
+\text{High} & U > 2 \\ 
+\text{Medium} & 0 < U \le 2 \\ 
+\text{Low} & U = 0 
 \end{cases}
 $$
 
