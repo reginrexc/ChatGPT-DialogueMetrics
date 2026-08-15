@@ -1,5 +1,4 @@
 
-
 # DialogueMetrics v3.2 — Complete Equation / Computation Inventory
 
 ## A. Basic linguistic measurements
@@ -7,7 +6,7 @@
 ### 1. Word Count
 
 $$
-W = \text{number of whitespace-separated tokens}
+\large W = \text{number of whitespace-separated tokens}
 $$
 
 Implemented as:
@@ -16,16 +15,15 @@ Implemented as:
 len(text.split())
 ```
 
-So this is **not** a linguistic tokenizer; it is whitespace-based. 
+So this is **not** a linguistic tokenizer; it is whitespace‑based. 
 
 ---
 
 ### 2. Token Count
 
 $$
-T = \left\vert \text{Tokenizer}(\text{text}) \right\vert
+\large T = |\text{Tokenizer}(text)|
 $$
-
 
 The script uses:
 
@@ -44,7 +42,7 @@ That should be explicitly documented.
 ### 3. Sentence Count
 
 $$
-S = \left\vert \text{split}(\text{text}, \text{ [.!?]+}) \right\vert
+\large S = |\text{split}(text,\ [.!?]+)|
 $$
 
 The script splits on `.`, `!`, and `?`. 
@@ -55,32 +53,33 @@ The script splits on `.`, `!`, and `?`.
 
 For each word, the script:
 
-1. counts vowel-group transitions,
+1. counts vowel‑group transitions,
 2. subtracts one for terminal `e`,
 3. adds one for terminal consonant + `le`,
 4. applies:
 
 $$
-Syllables(word)=\max(1,SyllableEstimate)
+\large Syllables(word)=\max(1,SyllableEstimate)
 $$
 
-This is a heuristic rather than a dictionary-based syllable count. 
+This is a heuristic rather than a dictionary‑based syllable count. 
 
 ---
 
-# B. Sentiment
+## B. Sentiment
 
 ### 5. Sentiment polarity
 
 The script delegates polarity to **TextBlob**:
 
 $$
-P \in [-1,1]
+\large P \in [-1,1]
 $$
 
 Classification:
 
 $$
+\large
 Label =
 \begin{cases}
 Positive & P>0.05\\
@@ -92,10 +91,8 @@ $$
 Subjectivity is also returned by TextBlob:
 
 $$
-Subjectivity \in [0,1]
+\large Subjectivity \in [0,1]
 $$
-
-
 
 ---
 
@@ -104,32 +101,32 @@ $$
 The categorical sentiment labels are mapped:
 
 $$
-Negative=-1,\quad Neutral=0,\quad Positive=1
+\large Negative=-1,\quad Neutral=0,\quad Positive=1
 $$
 
 Then:
 
 $$
+\large
 SentimentShift =
 \frac{1}{n-1}
 \sum_{i=2}^{n}|S_i-S_{i-1}|
 $$
 
-
-
 This is **categorical sentiment volatility**, not continuous polarity volatility.
 
 ---
 
-# C. Information / lexical metrics
+## C. Information / lexical metrics
 
-## 7. Shannon Entropy
+### 7. Shannon Entropy
 
 This is one of the most important genuine mathematical metrics in the system.
 
 For token probabilities $p_i$:
 
 $$
+\large
 \boxed{
 H=-\sum_i p_i\log_2(p_i)
 }
@@ -138,20 +135,19 @@ $$
 where:
 
 $$
-p_i=\frac{c_i}{N}
+\large p_i=\frac{c_i}{N}
 $$
 
 and $c_i$ is the frequency of token $i$.
-
-
 
 Higher entropy means greater distributional diversity among the observed tokens.
 
 ---
 
-## 8. Type-Token Ratio
+### 8. Type‑Token Ratio
 
 $$
+\large
 \boxed{
 TTR=\frac{V}{N}
 }
@@ -162,19 +158,16 @@ where:
 - $V$ = unique word types
 - $N$ = total words
 
-
-
 ---
 
-## 9. Unique words per 100 words
+### 9. Unique words per 100 words
 
 $$
+\large
 \boxed{
 U_{100}=\frac{V}{N}\times100
 }
 $$
-
-
 
 ### Important correction
 
@@ -184,13 +177,14 @@ That should be corrected in the methodology sheet.
 
 ---
 
-# D. Readability
+## D. Readability
 
-## 10. Flesch Reading Ease
+### 10. Flesch Reading Ease
 
 The script implements:
 
 $$
+\large
 \boxed{
 FRE =
 206.835
@@ -207,23 +201,22 @@ where:
 - $S$ = sentence count
 - $Y$ = estimated syllable count
 
-
-
 ---
 
-# E. Contradiction / adversarial structure
+## E. Contradiction / adversarial structure
 
-These are **marker-count metrics**, not semantic contradiction equations.
+These are **marker‑count metrics**, not semantic contradiction equations.
 
 For each contradiction category $k$:
 
 $$
-C_k = \text{RegexCount}(\text{pattern}_k, \text{text})
+\large C_k = \text{RegexCount}(pattern_k,text)
 $$
 
 Total:
 
 $$
+\large
 \boxed{
 C_{total}=
 C_{negation}
@@ -238,40 +231,48 @@ The five categories are explicitly defined in the script.
 
 ---
 
-## 11. Contradiction:Elaboration Ratio
+### 11. Contradiction:Elaboration Ratio
 
 $$
+\large
 \boxed{
 CER=\frac{C_{total}}{E_{total}}
 }
 $$
 
-where $E_{total}$ is the total elaboration-marker count.
+where $E_{total}$ is the total elaboration‑marker count.
 
 If elaborations are zero, the current implementation returns:
 
 $$
-CER=\infty
+\large CER=\infty
 $$
-
-
 
 This is worth changing eventually to `NaN` because infinity can distort downstream statistics.
 
 ---
 
-# F. Elaboration
+## F. Elaboration
 
 For each elaboration category:
 
 $$
-\Large \mathbf{\mathsf{E}}_k = \textbf{\textsf{RegexCount}}(\textbf{\textsf{pattern}}_k, \textbf{\textsf{text}})
+\large E_k=\text{RegexCount}(pattern_k,text)
 $$
 
 Total:
 
 $$
-E_{\text{total}} = E_{\text{causation}} + E_{\text{explanation}} + E_{\text{expansion}} + E_{\text{consequence}} + E_{\text{exemplification}}
+\large
+\boxed{
+E_{total}
+=
+E_{causation}
++E_{explanation}
++E_{expansion}
++E_{consequence}
++E_{exemplification}
+}
 $$
 
 The five categories are explicitly defined in the code. 
@@ -280,23 +281,24 @@ Again, this is a **lexical elaboration proxy**, not semantic elaboration.
 
 ---
 
-# G. Epistemic stance
+## G. Epistemic stance
 
 ### 12. Hedge count
 
 $$
-H_c=\operatorname{RegexCount}(hedge\ patterns)
+\large H_c=\text{RegexCount}(hedge\ patterns)
 $$
 
 ### 13. Confidence count
 
 $$
-C_c=\operatorname{RegexCount}(confidence\ patterns)
+\large C_c=\text{RegexCount}(confidence\ patterns)
 $$
 
 ### 14. Epistemic Stance
 
 $$
+\large
 \boxed{
 ES=C_c-H_c
 }
@@ -304,19 +306,18 @@ $$
 
 Positive values indicate more confidence markers than hedge markers.
 
-
-
 This is one of the clearest examples where the metric is **an operational linguistic index**, not a direct measurement of epistemic certainty.
 
 ---
 
-# H. Cognitive Load Indicators
+## H. Cognitive Load Indicators
 
 ### 15. Cognitive Load Total
 
 For five marker classes:
 
 $$
+\large
 \boxed{
 CL=
 CC+AB+MC+CO+CN
@@ -331,28 +332,28 @@ where:
 - $CO$ = computational
 - $CN$ = conditional
 
-
-
 ---
 
 ### 16. Cognitive Load Density
 
 $$
+\large
 \boxed{
 CLD=
 \frac{CL}{W}\times100
 }
 $$
 
-This is the normalized form of the cognitive-load marker count. 
+This is the normalized form of the cognitive‑load marker count. 
 
 ---
 
-# I. Discourse coherence
+## I. Discourse coherence
 
 ### 17. Reference Count
 
 $$
+\large
 R=
 R_{anaphoric}
 +R_{demonstrative}
@@ -360,11 +361,10 @@ R_{anaphoric}
 +R_{continuity}
 $$
 
-
-
 ### 18. Reference Density
 
 $$
+\large
 \boxed{
 RD=\frac{R}{W}\times100
 }
@@ -375,6 +375,7 @@ $$
 For consecutive turns:
 
 $$
+\large
 \boxed{
 EC=
 \frac{|P\cap C|}{|P|}
@@ -383,10 +384,8 @@ $$
 
 where:
 
-- $P$ = previous-turn content words after stopword removal
-- $C$ = current-turn content words after stopword removal
-
-
+- $P$ = previous‑turn content words after stopword removal
+- $C$ = current‑turn content words after stopword removal
 
 This is technically **lexical continuity**, despite being named Entity Continuity.
 
@@ -394,23 +393,24 @@ That distinction is important.
 
 ---
 
-# J. Affective trajectory
+## J. Affective trajectory
 
 For each affect $a$:
 
 $$
-A_a=\operatorname{RegexCount}(pattern_a,text)
+\large A_a=\text{RegexCount}(pattern_a,text)
 $$
 
 The six dimensions are:
 
 $$
-Curiosity,\ Confusion,\ Satisfaction,\ Frustration,\ Surprise,\ Engagement
+\large Curiosity,\ Confusion,\ Satisfaction,\ Frustration,\ Surprise,\ Engagement
 $$
 
 ### 20. Affective Intensity
 
 $$
+\large
 \boxed{
 AI=\sum_a A_a
 }
@@ -419,6 +419,7 @@ $$
 ### 21. Affective Diversity
 
 $$
+\large
 \boxed{
 AD=|\{a:A_a>0\}|
 }
@@ -427,28 +428,28 @@ $$
 ### 22. Dominant Affect
 
 $$
+\large
 \boxed{
 DA=\arg\max_a A_a
 }
 $$
 
-
-
 Again, these are **lexical affect markers**, not physiological or psychological measurements.
 
 ---
 
-# K. Conversational repair
+## K. Conversational repair
 
 For each repair category:
 
 $$
-R_k=\operatorname{RegexCount}(pattern_k,text)
+\large R_k=\text{RegexCount}(pattern_k,text)
 $$
 
 ### 23. Total Repair Markers
 
 $$
+\large
 \boxed{
 R_{total}=
 R_{self}
@@ -459,13 +460,12 @@ R_{self}
 }
 $$
 
-
-
 ### 24. Repair Type
 
 This is categorical precedence logic:
 
 $$
+\large
 RepairType=
 \begin{cases}
 SelfRepair & R_{self}>0\\
@@ -480,11 +480,12 @@ Note that the precedence order matters.
 
 ---
 
-# L. Knowledge construction
+## L. Knowledge construction
 
 ### 25. Knowledge Construction Score
 
 $$
+\large
 \boxed{
 KCS=
 J+H+E+S+P
@@ -499,13 +500,12 @@ where:
 - $S$ = synthesis
 - $P$ = perspective
 
-
-
 ### 26. Construction Phase
 
 Categorical rule:
 
 $$
+\large
 Phase=
 \begin{cases}
 Hypothesis & H>S\\
@@ -519,11 +519,12 @@ Again, this is lexical classification.
 
 ---
 
-# M. Social presence
+## M. Social presence
 
 ### 27. Social Presence Score
 
 $$
+\large
 \boxed{
 SPS=
 A+E+M+S+P+H
@@ -539,13 +540,12 @@ where:
 - $P$ = politeness
 - $H$ = humor
 
-
-
 ### 28. Rapport Index
 
 This one has an explicit weighting:
 
 $$
+\large
 \boxed{
 RI=
 2S+
@@ -560,20 +560,18 @@ where:
 - $A$ = acknowledgment markers
 - $M$ = empathy markers
 
-
-
-This is an especially important equation to expose because the weighting is a **researcher-defined assumption**, not a universally established rapport equation.
+This is an especially important equation to expose because the weighting is a **researcher‑defined assumption**, not a universally established rapport equation.
 
 ---
 
-# N. Argumentation
+## N. Argumentation
 
 ### 29. Argument component detection
 
 For each component:
 
 $$
-X_k=\mathbf{1}(count_k>0)
+\large X_k=\mathbf{1}(count_k>0)
 $$
 
 where:
@@ -586,6 +584,7 @@ where:
 ### 30. Argument Quality
 
 $$
+\large
 \boxed{
 AQ=X_C+X_E+X_W+X_Q
 }
@@ -594,16 +593,15 @@ $$
 Therefore:
 
 $$
-AQ\in\{0,1,2,3,4\}
+\large AQ\in\{0,1,2,3,4\}
 $$
-
-
 
 ### 31. Argument Structure
 
 The categorical structure is:
 
 $$
+\large
 Structure=
 \begin{cases}
 Complete & C\land E\land W\\
@@ -619,23 +617,24 @@ That is worth explicitly documenting.
 
 ---
 
-# O. Temporal dynamics
+## O. Temporal dynamics
 
 ### 32. Temporal orientation
 
 Let:
 
 $$
-R_f=\text{reflection markers}
+\large R_f=\text{reflection markers}
 $$
 
 $$
-P_r=\text{projection markers}
+\large P_r=\text{projection markers}
 $$
 
 Then:
 
 $$
+\large
 Orientation=
 \begin{cases}
 Past & R_f>P_r\\
@@ -644,30 +643,30 @@ Present & R_f=P_r
 \end{cases}
 $$
 
-
-
 ### 33. Urgency Level
 
 $$
-\text{Urgency} = 
-\begin{cases} 
-\text{High} & U > 2 \\ 
-\text{Medium} & 0 < U \le 2 \\ 
-\text{Low} & U = 0 
+\large
+Urgency=
+\begin{cases}
+High & U>2\\
+Medium & 0<U\le2\\
+Low & U=0
 \end{cases}
 $$
 
-where $U$ is the urgency-marker count.
+where $U$ is the urgency‑marker count.
 
 ---
 
-# P. Information Efficiency Index
+## P. Information Efficiency Index
 
 ### 34. IEI
 
 One of the v3.2 headline equations:
 
 $$
+\large
 \boxed{
 IEI=\frac{H}{W}
 }
@@ -675,21 +674,20 @@ $$
 
 where $H$ is Shannon entropy and $W$ is word count.
 
-
-
 So this is explicitly:
 
-> **Shannon information per whitespace-delimited word.**
+> **Shannon information per whitespace‑delimited word.**
 
 ---
 
-# Q. Lexical Mirroring
+## Q. Lexical Mirroring
 
 ### 35. Lexical Mirroring
 
 For consecutive turns:
 
 $$
+\large
 M=
 \frac{|S\cap T|}{|S|}
 $$
@@ -699,44 +697,41 @@ where:
 - $S$ = unique words ≥4 characters in source turn
 - $T$ = unique words ≥4 characters in target turn
 
-
-
 This is **directional**, because the denominator is only the source set.
 
 It is therefore **not the Jaccard similarity**.
 
 ---
 
-# R. Cognitive Asymmetry
+## R. Cognitive Asymmetry
 
 ### 36. Cognitive Asymmetry
 
 $$
+\large
 \boxed{
 CA_i=
 |Readability_i-Readability_{i-1}|
 }
 $$
 
-
-
 The first message receives:
 
 $$
-CA_1=0
+\large CA_1=0
 $$
 
 because there is no previous readability score.
 
 ---
 
-# S. Refusal markers
+## S. Refusal markers
 
 ### 37. Refusal Marker Count
 
 $$
-RM=
-\operatorname{RegexCount}(refusal\ patterns,text)
+\large RM=
+\text{RegexCount}(refusal\ patterns,text)
 $$
 
 The current pattern includes terms such as:
@@ -753,34 +748,32 @@ The current pattern includes terms such as:
 - `medical advice`
 - `violate`
 
-
-
-This is a **boundary-marker count**, not a semantic refusal classifier.
+This is a **boundary‑marker count**, not a semantic refusal classifier.
 
 ---
 
-# T. Turn-pair metrics
+## T. Turn‑pair metrics
 
-## 38. Response Ratio
+### 38. Response Ratio
 
 For a user → assistant pair:
 
 $$
+\large
 \boxed{
 RR=
 \frac{W_{assistant}}{W_{user}}
 }
 $$
 
-
-
 ---
 
-## 39. Semantic Overlap
+### 39. Semantic Overlap
 
 Despite the name, this is actually a **Jaccard similarity of word sets**.
 
 $$
+\large
 \boxed{
 SO=
 \frac{|U\cap A|}
@@ -788,24 +781,22 @@ SO=
 }
 $$
 
-where $U$ and $A$ are stopword-filtered word sets from user and assistant turns.
-
-
+where $U$ and $A$ are stopword‑filtered word sets from user and assistant turns.
 
 This is important for transparency:
 
-> It is **not embedding-based semantic similarity**.
+> It is **not embedding‑based semantic similarity**.
 
 ---
 
-# U. Keyword flow
+## U. Keyword flow
 
-## 40. Keyword Persistence
+### 40. Keyword Persistence
 
 For each consecutive pair:
 
 $$
-KP_i=
+\large KP_i=
 \frac{|K_{i-1}\cap K_i|}
 {|K_{i-1}|}
 $$
@@ -813,6 +804,7 @@ $$
 Then:
 
 $$
+\large
 \boxed{
 \overline{KP}
 =
@@ -821,31 +813,29 @@ $$
 }
 $$
 
-
-
 Again, directional rather than symmetric.
 
 ---
 
-## 41. Flow Edges
+### 41. Flow Edges
 
 $$
+\large
 \boxed{
 FE=\sum_i |K_{i-1}\cap K_i|
 }
 $$
 
-
-
 ---
 
-# V. Response time / temporal metrics
+## V. Response time / temporal metrics
 
-## 42. Response Time
+### 42. Response Time
 
 For consecutive messages:
 
 $$
+\large
 \boxed{
 RT_i=t_i-t_{i-1}
 }
@@ -853,59 +843,55 @@ $$
 
 in seconds.
 
-
-
-The code records the time difference between **every consecutive message**, while turn-length tracking is only updated when the role changes.
+The code records the time difference between **every consecutive message**, while turn‑length tracking is only updated when the role changes.
 
 ---
 
-## 43. Conversation Duration
+### 43. Conversation Duration
 
 $$
+\large
 \boxed{
 D=t_{max}-t_{min}
 }
 $$
 
-
-
 ---
 
-# W. Response editing
+## W. Response editing
 
-## 44. Edit Similarity
+### 44. Edit Similarity
 
 The script uses Python's `SequenceMatcher`:
 
 $$
-ES=
+\large ES=
 SequenceMatcher(text_1,text_2)
 $$
 
 with the resulting ratio.
 
-For multi-part messages:
+For multi‑part messages:
 
 $$
-ES=
+\large ES=
 Similarity(first\ part,last\ part)
 $$
 
-
-
 ---
 
-## 45. Edit Count
+### 45. Edit Count
 
 For a message with multiple parts:
 
 $$
-EC=n_{parts}-1
+\large EC=n_{parts}-1
 $$
 
 For consecutive assistant responses:
 
 $$
+\large
 EC=
 \begin{cases}
 1 & ES<0.9\\
@@ -913,13 +899,11 @@ EC=
 \end{cases}
 $$
 
-
-
-This is important: **edit_count is partly an export-structure metric and partly an inferred revision metric.**
+This is important: **edit_count is partly an export‑structure metric and partly an inferred revision metric.**
 
 ---
 
-# X. BLEU / METEOR / ROUGE
+## X. BLEU / METEOR / ROUGE
 
 These are calculated only for assistant responses following a previous message.
 
@@ -928,6 +912,7 @@ These are calculated only for assistant responses following a previous message.
 The script invokes NLTK's sentence BLEU implementation:
 
 $$
+\large
 BLEU=
 BP\cdot
 \exp
@@ -938,18 +923,16 @@ $$
 
 with smoothing enabled.
 
-
-
 But note: the reference is simply:
 
 $$
-Reference = previous\ message
+\large Reference = previous\ message
 $$
 
 and candidate:
 
 $$
-Candidate = current\ assistant\ message
+\large Candidate = current\ assistant\ message
 $$
 
 So this is **not answer correctness**.
@@ -961,18 +944,19 @@ So this is **not answer correctness**.
 The script invokes NLTK METEOR:
 
 $$
-METEOR=f(\text{unigram precision},\text{unigram recall},\text{alignment penalty})
+\large METEOR=f(\text{unigram precision},\text{unigram recall},\text{alignment penalty})
 $$
 
 using the previous message as reference. 
 
 ---
 
-### 48. ROUGE-1
+### 48. ROUGE‑1
 
-The script uses the ROUGE implementation and extracts the F-measure:
+The script uses the ROUGE implementation and extracts the F‑measure:
 
 $$
+\large
 \boxed{
 ROUGE1_F=
 \frac{2PR}{P+R}
@@ -983,21 +967,22 @@ where $P$ and $R$ are unigram precision and recall.
 
 ---
 
-### 49. ROUGE-L
+### 49. ROUGE‑L
 
-Likewise, the script extracts ROUGE-L F-measure based on longest common subsequence similarity. 
+Likewise, the script extracts ROUGE‑L F‑measure based on longest common subsequence similarity. 
 
-Again, these are **turn-to-turn lexical similarity measures**, not factual answer-quality measures.
+Again, these are **turn‑to‑turn lexical similarity measures**, not factual answer‑quality measures.
 
 ---
 
-# Y. Convergence
+## Y. Convergence
 
-## 50. Sliding-window contradiction mean
+### 50. Sliding‑window contradiction mean
 
 For window $W_i$:
 
 $$
+\large
 \boxed{
 \overline C_i=
 \frac{1}{k}
@@ -1009,9 +994,10 @@ where $k=10$ by default.
 
 ---
 
-## 51. Sliding-window elaboration mean
+### 51. Sliding‑window elaboration mean
 
 $$
+\large
 \boxed{
 \overline E_i=
 \frac{1}{k}
@@ -1021,9 +1007,10 @@ $$
 
 ---
 
-## 52. Sliding-window response time
+### 52. Sliding‑window response time
 
 $$
+\large
 \boxed{
 \overline{RT_i}
 =
@@ -1031,14 +1018,14 @@ mean(RT_j)
 }
 $$
 
-for non-null response times within the window.
+for non‑null response times within the window.
 
 ---
 
-## 53. Sentiment variance
+### 53. Sentiment variance
 
 $$
-Var(S)=
+\large Var(S)=
 \frac{\sum_i(S_i-\bar S)^2}{n-1}
 $$
 
@@ -1047,20 +1034,20 @@ Python/Pandas computes this variance.
 Then the script defines:
 
 $$
+\large
 \boxed{
 SentimentStability=1-Var(S)
 }
 $$
 
-
-
 This is a particularly important methodological caveat: **`1 - variance` is not inherently bounded to [0,1]**, so it should not be described as a normalized stability index without qualification.
 
 ---
 
-## 54. Cognitive-load window
+### 54. Cognitive‑load window
 
 $$
+\large
 \boxed{
 CLW_i=
 mean(CLD_j)
@@ -1071,9 +1058,10 @@ within the sliding window.
 
 ---
 
-## 55. Repair-frequency window
+### 55. Repair‑frequency window
 
 $$
+\large
 \boxed{
 RF_i=
 \sum_j Repairs_j
@@ -1084,11 +1072,12 @@ within the sliding window.
 
 ---
 
-## 56. Convergence trend
+### 56. Convergence trend
 
 The current code classifies:
 
 $$
+\large
 Trend=
 \begin{cases}
 Decreasing & C_{current}<C_{previous}\\
@@ -1098,30 +1087,29 @@ $$
 
 with a comparison against a prior window. 
 
-**Important:** despite the methodology saying "converging," this is specifically a **contradiction-rate trend heuristic**, not a formal convergence statistic.
+**Important:** despite the methodology saying "converging," this is specifically a **contradiction‑rate trend heuristic**, not a formal convergence statistic.
 
 ---
 
-# Z. Dialogue-act transition matrix
+## Z. Dialogue‑act transition matrix
 
-## 57. Transition count
+### 57. Transition count
 
 For consecutive dialogue acts:
 
 $$
-T_{ij}=
+\large T_{ij}=
 \#(Act_i\rightarrow Act_j)
 $$
 
-
-
 ---
 
-## 58. Transition probability
+### 58. Transition probability
 
 For each source act $i$:
 
 $$
+\large
 \boxed{
 P(j|i)=
 \frac{T_{ij}}
@@ -1129,17 +1117,16 @@ P(j|i)=
 }
 $$
 
-
-
 ---
 
-# AA. Correlation matrix
+## AA. Correlation matrix
 
-## 59. Pearson correlation
+### 59. Pearson correlation
 
 For numerical metrics $X$ and $Y$:
 
 $$
+\large
 \boxed{
 r_{XY}
 =
@@ -1164,38 +1151,38 @@ This is calculated both globally and, where sufficient data exists, per thread.
 
 ---
 
-# BB. Aggregation equations
+## BB. Aggregation equations
 
 The thread summary also computes numerous descriptive statistics.
 
 ### 60. Mean word count
 
 $$
-\bar W=\frac{1}{N}\sum_i W_i
+\large \bar W=\frac{1}{N}\sum_i W_i
 $$
 
 ### 61. Mean entropy
 
 $$
-\bar H=\frac{1}{N}\sum_iH_i
+\large \bar H=\frac{1}{N}\sum_iH_i
 $$
 
 ### 62. Mean readability
 
 $$
-\overline{FRE}=\frac{1}{N}\sum_i FRE_i
+\large \overline{FRE}=\frac{1}{N}\sum_i FRE_i
 $$
 
 ### 63. Mean lexical diversity
 
 $$
-\overline{TTR}=\frac{1}{N}\sum_iTTR_i
+\large \overline{TTR}=\frac{1}{N}\sum_iTTR_i
 $$
 
 ### 64. Mean response time
 
 $$
-\overline{RT}
+\large \overline{RT}
 =
 mean(RT_i)
 $$
@@ -1203,7 +1190,7 @@ $$
 ### 65. Mean response ratio
 
 $$
-\overline{RR}
+\large \overline{RR}
 =
 mean(RR_i)
 $$
@@ -1211,7 +1198,7 @@ $$
 ### 66. Mean semantic overlap
 
 $$
-\overline{SO}
+\large \overline{SO}
 =
 mean(SO_i)
 $$
@@ -1220,33 +1207,32 @@ These are implemented directly in the thread summary.
 
 ---
 
-# CC. Thread-level rates
+## CC. Thread‑level rates
 
-### 67. Self-repair rate
+### 67. Self‑repair rate
 
 $$
+\large
 \boxed{
 SRR=
 \frac{\sum SelfCorrections}{N}
 }
 $$
 
-
-
-Note that this is technically **self-correction markers per message**, not "percentage of repairs that are self-repairs."
+Note that this is technically **self‑correction markers per message**, not "percentage of repairs that are self‑repairs."
 
 ---
 
 ### 68. Complete argument count
 
 $$
-CA=\#(ArgumentStructure=complete)
+\large CA=\#(ArgumentStructure=complete)
 $$
 
-### 69. High-urgency count
+### 69. High‑urgency count
 
 $$
-HU=\#(UrgencyLevel=high)
+\large HU=\#(UrgencyLevel=high)
 $$
 
 These are counts rather than normalized rates. 
@@ -1260,7 +1246,7 @@ After enumerating everything, I would classify the current v3.2 metrics into **f
 | Class | Examples | What they actually measure |
 |---|---|---|
 | **Direct mathematical measurements** | Entropy, TTR, Flesch, IEI, Jaccard overlap, Pearson $r$ | Quantifiable textual/statistical properties |
-| **Normalized marker indices** | Cognitive Load Density, Reference Density, Rapport Index | Weighted/count-based lexical proxies |
+| **Normalized marker indices** | Cognitive Load Density, Reference Density, Rapport Index | Weighted/count‑based lexical proxies |
 | **Pattern classifiers** | Contradiction, elaboration, repair, affect, temporal orientation | Presence/frequency of predefined linguistic patterns |
 | **External standard algorithms** | BLEU, METEOR, ROUGE, TextBlob sentiment, SequenceMatcher | Established algorithms applied to adjacent turns |
 
@@ -1273,7 +1259,7 @@ For example:
 is actually:
 
 $$
-\frac{\text{count of five predefined lexical marker classes}}
+\large \frac{\text{count of five predefined lexical marker classes}}
 {\text{word count}}\times100
 $$
 
@@ -1286,8 +1272,8 @@ Likewise:
 is currently:
 
 $$
-\frac{\text{shared non-stopword types}}
-{\text{previous-turn non-stopword types}}
+\large \frac{\text{shared non‑stopword types}}
+{\text{previous‑turn non‑stopword types}}
 $$
 
 It is a lexical continuity measure, not entity resolution.
@@ -1311,6 +1297,7 @@ for contradiction detection.
 That is more defensible than calling it semantic contradiction, but I would go one step further and explicitly state:
 
 $$
+\large
 \boxed{
 Contradiction\ Index
 =
@@ -1321,6 +1308,7 @@ $$
 **not**
 
 $$
+\large
 \boxed{
 Actual\ Logical\ Contradiction
 }
@@ -1337,3 +1325,4 @@ The same principle should apply to **every metric**.
 That would make the Qwen comments problem you raised earlier much easier to solve, because the commentary layer would no longer be allowed to infer something stronger than the underlying equation supports.
 
 The current code itself provides enough information to build this as a **full mathematical codebook** rather than the much shorter narrative methodology currently embedded in the workbook.
+```
