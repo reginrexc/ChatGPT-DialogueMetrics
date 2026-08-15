@@ -1,9 +1,9 @@
 """
-ChatGPT-DialogueMetrics Tool for Extended AI Dialogue Research
+Universal DialogueMetrics v3.2 — Claude / ChatGPT / DeepSeek / Qwen Parser
 ==============================================================
 
-This script analyzes ChatGPT conversation JSON exports to extract
-comprehensive metrics for studying extended human-AI dialogues.
+This script analyzes Claude, ChatGPT, DeepSeek, and Qwen conversation JSON exports
+to extract comprehensive metrics for studying extended human-AI dialogues.
 
 Enhanced version with:
 - Improved semantic contradiction detection
@@ -24,13 +24,14 @@ SPDX-License-Identifier: LicenseRef-RCNM-1.0
 Version: 1.0  
 Status: Custom Research License  
 Author: R.Rex (Collaborated with ChatGPT, Claude, Kimi, Deepseek, Gemini)
-Project: ChatGPT-DialogueMetrics  
+Project: Universal-DialogueMetrics  
 Year: 2026  
 
 """
 
 import json
 import re
+import sys
 from datetime import datetime
 import pandas as pd
 import numpy as np
@@ -50,10 +51,19 @@ warnings.filterwarnings('ignore')
 tokenizer = tiktoken.get_encoding("cl100k_base")
 
 # === Configuration ===
-input_file = "chat.json"  # Your ChatGPT export file
+# The parser accepts Claude, ChatGPT, and DeepSeek exports.
+# Usage:
+#     py claude_dialoguemetrics_v3_2.py conversations.json
+#
+# If no argument is supplied, it defaults to chat.json.
+input_file = sys.argv[1] if len(sys.argv) > 1 else "conversations.json"
+
+# Output filenames are determined AFTER structural JSON provider detection.
+# The input filename itself is never used to determine whether the source is
+# ChatGPT or Claude.
 timestamp_str = datetime.now().strftime("%Y%m%d_%H%M%S")
-main_output_file = f"gpt_analysis_{timestamp_str}.xlsx"          # v3.0 main output
-matrix_output_file = f"gpt_matrices_{timestamp_str}.xlsx"        # v3.1 matrix output
+main_output_file = None
+matrix_output_file = None
 
 # === Enhanced Stopwords (expanded) ===
 stopwords = set([
@@ -626,38 +636,881 @@ def classify_question_type(text):
     else:
         return 'other'
 
-# === Recursive Extraction (maintaining original structure) ===
-def extract_messages(mapping):
-    """Extract messages from ChatGPT JSON mapping structure"""
-    messages_list = []
-    message = mapping.get("message")
-    if not message: 
-        return messages_list
+# =============================================================================
+# UNIVERSAL CONVERSATION PARSER
+# =============================================================================
+# The analysis engine below expects a normalized message structure:
+#
+# {
+#   "role": "user" | "assistant" | "system",
+#   "content": "...",
+#   "timestamp": "YYYY-MM-DD HH:MM:SS",
+#   "word_count": ...,
+#   "token_count": ...,
+#   "sentence_count": ...,
+#   "model": "...",
+#   "parts": [...]
+# }
+#
+# Claude exports commonly use:
+#   conversation["chat_messages"]
+#   message["sender"]
+#   message["text"]
+#   message["created_at"]
+#
+# Some Claude exports instead store message content in:
+#   message["content"]
+#
+# This adapter converts Claude data into the same internal structure used
+# by the original ChatGPT-DialogueMetrics analysis. The downstream metrics
+# are intentionally left unchanged.
+# =============================================================================
 
-    role = message.get("author", {}).get("role", "unknown")
-    content_data = message.get("content", {})
-    content_parts = content_data.get("parts", [])
-    content = extract_text_from_parts(content_parts)
-    timestamp = convert_timestamp(message.get("create_time", ""))
-    metadata = message.get("metadata", {})
-    model_used = metadata.get("model_slug", content_data.get("model_slug", "unknown"))
+def normalize_role(role):
+    """Normalize provider-specific role/sender names."""
+    if role is None:
+        return "unknown"
 
-    if content:
-        messages_list.append({
-            "role": role, 
-            "content": content, 
-            "timestamp": timestamp,
-            "word_count": count_words(content), 
-            "token_count": count_tokens(content),
-            "sentence_count": count_sentences(content),
-            "model": model_used,
-            "parts": [p.get("text") if isinstance(p, dict) else p for p in content_parts]
-        })
+    r = str(role).strip().lower()
 
-    for child in message.get("children", []):
-        messages_list.extend(extract_messages({"message": child}))
-    
-    return messages_list
+    role_map = {
+        "human": "user",
+        "user": "user",
+        "person": "user",
+        "me": "user",
+
+        "assistant": "assistant",
+        "claude": "assistant",
+        "ai": "assistant",
+        "model": "assistant",
+
+        "system": "system",
+        "developer": "system",
+    }
+
+    return role_map.get(r, r)
+
+
+def extract_text_from_claude_content(value):
+    """
+    Extract plain text from the different content representations seen
+    in Claude exports.
+
+    Supported examples:
+      "hello"
+      [{"type": "text", "text": "hello"}]
+      [{"text": "hello"}]
+      {"text": "hello"}
+      {"content": [{"type": "text", "text": "hello"}]}
+    """
+    if value is None:
+        return ""
+
+    if isinstance(value, str):
+        return value.strip()
+
+    if isinstance(value, list):
+        pieces = []
+        for item in value:
+            extracted = extract_text_from_claude_content(item)
+            if extracted:
+                pieces.append(extracted)
+        return "\n".join(pieces).strip()
+
+    if isinstance(value, dict):
+        # Prefer explicit text.
+        if isinstance(value.get("text"), str):
+            return value["text"].strip()
+
+        # Some exports wrap content again.
+        for key in ("content", "parts", "blocks", "message"):
+            if key in value:
+                extracted = extract_text_from_claude_content(value[key])
+                if extracted:
+                    return extracted
+
+    return ""
+
+
+def parse_timestamp_for_sort(value):
+    """
+    Parse the ORIGINAL timestamp into a chronological sort key.
+
+    The COMPLETE timestamp is used: year, month, day, hour, minute, second,
+    and microseconds when present. Timezone-aware ISO timestamps are
+    normalized to UTC for comparison.
+    """
+    if value is None or value == "":
+        return None
+
+    try:
+        if isinstance(value, (int, float)):
+            return datetime.fromtimestamp(float(value)).replace(tzinfo=None)
+
+        text = str(value).strip()
+        if not text:
+            return None
+
+        iso_text = text
+        if iso_text.endswith(("Z", "z")):
+            iso_text = iso_text[:-1] + "+00:00"
+
+        try:
+            dt = datetime.fromisoformat(iso_text)
+            if dt.tzinfo is not None:
+                from datetime import timezone
+                dt = dt.astimezone(timezone.utc).replace(tzinfo=None)
+            return dt
+        except ValueError:
+            pass
+
+        formats = (
+            "%Y-%m-%d %H:%M:%S.%f",
+            "%Y-%m-%d %H:%M:%S",
+            "%Y-%m-%dT%H:%M:%S.%f",
+            "%Y-%m-%dT%H:%M:%S",
+            "%Y/%m/%d %H:%M:%S",
+            "%m/%d/%Y %H:%M:%S",
+        )
+
+        for fmt in formats:
+            try:
+                return datetime.strptime(text, fmt)
+            except ValueError:
+                continue
+    except Exception:
+        pass
+
+    return None
+
+
+def sort_messages_and_assign_sequence(rows):
+    """
+    Establish canonical chronological conversation order.
+
+    1. Extract all messages.
+    2. Parse the COMPLETE timestamp.
+    3. Sort chronologically.
+    4. Use original extraction order only as a deterministic tie-breaker
+       when timestamps are identical.
+    5. Assign Seq. # AFTER sorting.
+
+    Messages with invalid/missing timestamps are placed after timestamped
+    messages and retain their original extraction order.
+    """
+    prepared = []
+
+    for source_order, row in enumerate(rows):
+        item = dict(row)
+        raw_timestamp = item.get("_raw_timestamp", item.get("timestamp", ""))
+        item["_source_order"] = source_order
+        item["_sort_dt"] = parse_timestamp_for_sort(raw_timestamp)
+        prepared.append(item)
+
+    prepared.sort(
+        key=lambda x: (
+            x["_sort_dt"] is None,
+            x["_sort_dt"] if x["_sort_dt"] is not None else datetime.max,
+            x["_source_order"],
+        )
+    )
+
+    missing_count = sum(1 for x in prepared if x["_sort_dt"] is None)
+
+    # Canonical sequence is generated ONLY after chronological sorting.
+    for seq, item in enumerate(prepared, start=1):
+        item["sequence_number"] = f"#{seq}"
+
+    for item in prepared:
+        item.pop("_sort_dt", None)
+        item.pop("_source_order", None)
+        item.pop("_raw_timestamp", None)
+
+    return prepared, missing_count
+
+
+def normalize_timestamp(value):
+    """
+    Convert Claude timestamps into the same string format used by the
+    original analysis engine.
+
+    Handles:
+      - ISO-8601 strings
+      - Unix timestamps
+      - existing YYYY-MM-DD HH:MM:SS strings
+    """
+    if value is None or value == "":
+        return ""
+
+    try:
+        if isinstance(value, (int, float)):
+            return datetime.fromtimestamp(value).strftime("%Y-%m-%d %H:%M:%S")
+
+        value = str(value).strip()
+
+        # Already in the target format.
+        try:
+            return datetime.strptime(value, "%Y-%m-%d %H:%M:%S").strftime(
+                "%Y-%m-%d %H:%M:%S"
+            )
+        except ValueError:
+            pass
+
+        # Claude commonly uses ISO-8601 timestamps such as:
+        # 2026-08-15T08:32:14.123Z
+        iso_value = value.replace("Z", "+00:00")
+        dt = datetime.fromisoformat(iso_value)
+
+        # Keep the same naive timestamp representation used by the
+        # original script. This avoids changing downstream calculations.
+        if dt.tzinfo is not None:
+            dt = dt.replace(tzinfo=None)
+
+        return dt.strftime("%Y-%m-%d %H:%M:%S")
+
+    except Exception:
+        return str(value)
+
+
+def get_claude_message_text(message):
+    """Extract message text from common Claude message fields."""
+    candidates = [
+        message.get("text"),
+        message.get("content"),
+        message.get("parts"),
+        message.get("blocks"),
+    ]
+
+    for candidate in candidates:
+        text = extract_text_from_claude_content(candidate)
+        if text:
+            return text
+
+    return ""
+
+
+def normalize_claude_message(message):
+    """Convert one Claude message to the analysis engine's message schema."""
+    sender = (
+        message.get("sender")
+        or message.get("role")
+        or message.get("author")
+        or message.get("speaker")
+        or "unknown"
+    )
+
+    if isinstance(sender, dict):
+        sender = (
+            sender.get("role")
+            or sender.get("type")
+            or sender.get("name")
+            or "unknown"
+        )
+
+    role = normalize_role(sender)
+
+    text = get_claude_message_text(message)
+
+    raw_timestamp = (
+        message.get("created_at")
+        or message.get("create_time")
+        or message.get("timestamp")
+        or message.get("created")
+    )
+    timestamp = normalize_timestamp(raw_timestamp)
+
+    model_used = (
+        message.get("model")
+        or message.get("model_name")
+        or message.get("model_slug")
+        or message.get("model_id")
+        or "Claude"
+    )
+
+    # Preserve text parts where possible so the existing edit/revision
+    # detector can continue to operate.
+    raw_parts = message.get("parts")
+    if isinstance(raw_parts, list):
+        parts = []
+        for part in raw_parts:
+            part_text = extract_text_from_claude_content(part)
+            if part_text:
+                parts.append(part_text)
+    else:
+        parts = [text] if text else []
+
+    if not text:
+        return None
+
+    return {
+        "role": role,
+        "content": text,
+        "timestamp": timestamp,
+        "_raw_timestamp": raw_timestamp,
+        "word_count": count_words(text),
+        "token_count": count_tokens(text),
+        "sentence_count": count_sentences(text),
+        "model": model_used,
+        "parts": parts,
+    }
+
+
+def find_message_list(conversation):
+    """
+    Locate Claude's message array without assuming one exact export version.
+    """
+    candidate_keys = (
+        "chat_messages",
+        "messages",
+        "conversation_messages",
+        "turns",
+    )
+
+    for key in candidate_keys:
+        value = conversation.get(key)
+        if isinstance(value, list):
+            return value
+
+    return []
+
+
+def parse_claude_conversation(conversation):
+    """Parse one Claude conversation into normalized rows."""
+    rows = []
+
+    for message in find_message_list(conversation):
+        if not isinstance(message, dict):
+            continue
+
+        normalized = normalize_claude_message(message)
+        if normalized:
+            rows.append(normalized)
+
+    return rows
+
+
+def extract_text_from_deepseek_content(value):
+    """Extract visible text from common DeepSeek content representations."""
+    if value is None:
+        return ""
+    if isinstance(value, str):
+        return value.strip()
+    if isinstance(value, list):
+        pieces = []
+        for item in value:
+            text = extract_text_from_deepseek_content(item)
+            if text:
+                pieces.append(text)
+        return "\n".join(pieces).strip()
+    if isinstance(value, dict):
+        # Standard exporter/API content blocks.
+        for key in ("text", "content"):
+            if key in value:
+                text = extract_text_from_deepseek_content(value[key])
+                if text:
+                    return text
+        # Some exports use parts/blocks.
+        for key in ("parts", "blocks", "message"):
+            if key in value:
+                text = extract_text_from_deepseek_content(value[key])
+                if text:
+                    return text
+    return ""
+
+
+def find_deepseek_message_list(conversation):
+    """Locate a DeepSeek message list across common export variants."""
+    for key in ("messages", "chat_messages", "conversation_messages", "turns", "history"):
+        value = conversation.get(key)
+        if isinstance(value, list):
+            return value
+    # Some exports wrap messages under data.
+    data_value = conversation.get("data")
+    if isinstance(data_value, dict):
+        for key in ("messages", "chat_messages", "turns", "history"):
+            value = data_value.get(key)
+            if isinstance(value, list):
+                return value
+    return []
+
+
+def normalize_deepseek_message(message, conversation_model="DeepSeek"):
+    """Normalize one DeepSeek message into the DialogueMetrics schema."""
+    if not isinstance(message, dict):
+        return None
+
+    role = normalize_role(
+        message.get("role")
+        or message.get("sender")
+        or message.get("author")
+        or message.get("speaker")
+        or "unknown"
+    )
+
+    # Standard fields first; support nested message objects too.
+    nested = message.get("message") if isinstance(message.get("message"), dict) else {}
+    if nested:
+        role = normalize_role(nested.get("role") or role)
+
+    content_value = message.get("content")
+    if content_value is None:
+        content_value = message.get("text")
+    if content_value is None:
+        content_value = message.get("parts")
+    if content_value is None:
+        content_value = message.get("blocks")
+    if content_value is None and nested:
+        content_value = nested.get("content")
+
+    text = extract_text_from_deepseek_content(content_value)
+
+    # DeepSeek exports/API responses can expose reasoning separately. We do not
+    # silently append hidden reasoning to visible dialogue content because that
+    # would change the conversational corpus being measured.
+    if not text and isinstance(message.get("reasoning_content"), str):
+        text = message["reasoning_content"].strip()
+
+    raw_timestamp = (
+        message.get("sentAt")
+        or message.get("sent_at")
+        or message.get("timestamp")
+        or message.get("created_at")
+        or message.get("createdAt")
+        or message.get("create_time")
+        or message.get("created")
+    )
+    if raw_timestamp is None and nested:
+        raw_timestamp = (
+            nested.get("sentAt") or nested.get("timestamp") or
+            nested.get("created_at") or nested.get("create_time")
+        )
+
+    timestamp = normalize_timestamp(raw_timestamp)
+
+    model_used = (
+        message.get("model")
+        or message.get("model_name")
+        or message.get("model_slug")
+        or conversation_model
+        or "DeepSeek"
+    )
+
+    parts = []
+    raw_parts = message.get("parts")
+    if isinstance(raw_parts, list):
+        for part in raw_parts:
+            part_text = extract_text_from_deepseek_content(part)
+            if part_text:
+                parts.append(part_text)
+    elif text:
+        parts = [text]
+
+    if not text:
+        return None
+
+    return {
+        "role": role,
+        "content": text,
+        "timestamp": timestamp,
+        "_raw_timestamp": raw_timestamp,
+        "word_count": count_words(text),
+        "token_count": count_tokens(text),
+        "sentence_count": count_sentences(text),
+        "model": model_used,
+        "parts": parts,
+    }
+
+
+def parse_deepseek_conversation(conversation):
+    """Parse one DeepSeek conversation into normalized rows."""
+    model = conversation.get("model") or conversation.get("model_name") or "DeepSeek"
+    rows = []
+    for message in find_deepseek_message_list(conversation):
+        normalized = normalize_deepseek_message(message, model)
+        if normalized:
+            rows.append(normalized)
+    return rows
+
+
+def looks_like_deepseek_export(data):
+    """Structural DeepSeek detection; never relies on the input filename."""
+    if not isinstance(data, (dict, list)):
+        return False
+
+    if isinstance(data, dict):
+        # Direct API-style response/request.
+        model = str(data.get("model", "")).lower()
+        if "deepseek" in model:
+            return True
+
+        conversations = data.get("conversations")
+        if isinstance(conversations, list) and conversations:
+            sample = next((x for x in conversations if isinstance(x, dict)), None)
+            if sample:
+                model = str(sample.get("model", sample.get("model_name", ""))).lower()
+                if "deepseek" in model:
+                    return True
+                if "conversationid" in {str(k).lower() for k in sample.keys()}:
+                    return True
+                messages = find_deepseek_message_list(sample)
+                if messages:
+                    first = next((m for m in messages if isinstance(m, dict)), None)
+                    if first:
+                        keys = {str(k).lower() for k in first.keys()}
+                        if {"sentat", "sent_at", "createdat", "timestamp"} & keys:
+                            return True
+                        if "role" in keys and ("content" in keys or "text" in keys):
+                            return True
+
+        # Single conversation object.
+        messages = find_deepseek_message_list(data)
+        if messages:
+            model = str(data.get("model", "")).lower()
+            if "deepseek" in model:
+                return True
+            first = next((m for m in messages if isinstance(m, dict)), None)
+            if first:
+                keys = {str(k).lower() for k in first.keys()}
+                if "role" in keys and ("content" in keys or "text" in keys):
+                    # Do not classify ordinary ChatGPT mappings as DeepSeek.
+                    return bool("deepseek" in str(data).lower() or
+                                "timestamp" in keys or "sentat" in keys or "createdat" in keys)
+
+    elif isinstance(data, list) and data:
+        sample = next((x for x in data if isinstance(x, dict)), None)
+        if sample:
+            model = str(sample.get("model", sample.get("model_name", ""))).lower()
+            if "deepseek" in model:
+                return True
+            messages = find_deepseek_message_list(sample)
+            if messages:
+                first = next((m for m in messages if isinstance(m, dict)), None)
+                if first:
+                    keys = {str(k).lower() for k in first.keys()}
+                    return "role" in keys and ("content" in keys or "text" in keys) and bool(
+                        {"timestamp", "sentat", "createdat", "created_at"} & keys
+                    )
+    return False
+
+
+
+def extract_text_from_qwen_content_list(content_list):
+    """Extract only user-visible Qwen answer text from content_list.
+
+    Qwen can store one assistant message as a container whose content_list
+    includes thinking_summary, code_interpreter, search/tool phases, and the
+    final answer. DialogueMetrics must analyze the visible dialogue, not
+    internal reasoning/tool traces.
+    """
+    if not isinstance(content_list, list):
+        return ""
+
+    answer_parts = []
+    for item in content_list:
+        if not isinstance(item, dict):
+            continue
+        phase = str(item.get("phase", "")).lower().strip()
+        if phase != "answer":
+            continue
+        content = item.get("content", "")
+        text = extract_text_from_deepseek_content(content)
+        if text:
+            answer_parts.append(text)
+
+    return "\n".join(answer_parts).strip()
+
+
+def find_qwen_message_list(conversation):
+    """Locate Qwen's history.messages dictionary/list."""
+    if not isinstance(conversation, dict):
+        return []
+
+    chat = conversation.get("chat")
+    if isinstance(chat, dict):
+        history = chat.get("history")
+        if isinstance(history, dict):
+            messages = history.get("messages")
+            if isinstance(messages, dict):
+                return list(messages.values())
+            if isinstance(messages, list):
+                return messages
+
+        messages = chat.get("messages")
+        if isinstance(messages, dict):
+            return list(messages.values())
+        if isinstance(messages, list):
+            return messages
+
+    messages = conversation.get("messages")
+    if isinstance(messages, dict):
+        return list(messages.values())
+    if isinstance(messages, list):
+        return messages
+
+    return []
+
+
+def normalize_qwen_message(message, conversation_model="Qwen"):
+    """Normalize one Qwen history message into the common DialogueMetrics schema."""
+    if not isinstance(message, dict):
+        return None
+
+    role = normalize_role(message.get("role", "unknown"))
+    if role not in {"user", "assistant", "system"}:
+        return None
+
+    # User messages normally place visible text directly in content.
+    text = message.get("content")
+    if not isinstance(text, str):
+        text = extract_text_from_deepseek_content(text)
+
+    # Qwen assistant messages often have an empty top-level content and store
+    # the visible final answer in content_list[phase="answer"].
+    if not text:
+        text = extract_text_from_qwen_content_list(message.get("content_list"))
+
+    # Do NOT use reasoning_content or thinking_summary as dialogue content.
+    # Those are internal/reasoning traces and would contaminate the corpus.
+    if not text:
+        return None
+
+    raw_timestamp = (
+        message.get("timestamp")
+        or message.get("created_at")
+        or message.get("createdAt")
+        or message.get("create_time")
+        or message.get("sentAt")
+    )
+
+    model_used = (
+        message.get("model")
+        or message.get("modelName")
+        or (message.get("models") or [None])[0]
+        or conversation_model
+        or "Qwen"
+    )
+
+    return {
+        "role": role,
+        "content": text.strip(),
+        "timestamp": normalize_timestamp(raw_timestamp),
+        "_raw_timestamp": raw_timestamp,
+        "word_count": count_words(text),
+        "token_count": count_tokens(text),
+        "sentence_count": count_sentences(text),
+        "model": model_used,
+        "parts": [text.strip()],
+        "qwen_message_id": message.get("id", ""),
+        "qwen_parent_id": message.get("parentId", ""),
+        "qwen_chat_type": message.get("chat_type", ""),
+        "qwen_sub_chat_type": message.get("sub_chat_type", ""),
+    }
+
+
+def parse_qwen_conversation(conversation):
+    """Parse one Qwen export conversation."""
+    model = conversation.get("models", [None])
+    if isinstance(model, list) and model:
+        model = model[0]
+    model = model or conversation.get("model") or "Qwen"
+
+    rows = []
+    for message in find_qwen_message_list(conversation):
+        normalized = normalize_qwen_message(message, model)
+        if normalized:
+            rows.append(normalized)
+    return rows
+
+
+def looks_like_qwen_export(data):
+    """Structural Qwen detection based on the actual Qwen export schema."""
+    candidates = []
+    if isinstance(data, dict) and isinstance(data.get("data"), list):
+        candidates = [x for x in data["data"] if isinstance(x, dict)]
+    elif isinstance(data, list):
+        candidates = [x for x in data if isinstance(x, dict)]
+    elif isinstance(data, dict):
+        candidates = [data]
+
+    if not candidates:
+        return False
+
+    sample = candidates[0]
+    # Strong Qwen signature: data[] item -> chat.history.messages dictionary.
+    chat = sample.get("chat")
+    if isinstance(chat, dict):
+        history = chat.get("history")
+        if isinstance(history, dict) and isinstance(history.get("messages"), dict):
+            messages = history["messages"]
+            first = next((m for m in messages.values() if isinstance(m, dict)), None)
+            if first:
+                model = str(first.get("model", "") or "").lower()
+                keys = {str(k).lower() for k in first.keys()}
+                if "qwen" in model:
+                    return True
+                if {"role", "content", "timestamp"}.issubset(keys) or (
+                    "role" in keys and "parentid" in keys and "childrenids" in keys
+                ):
+                    # Qwen-specific container fields provide the final signal.
+                    if any(k in sample for k in ("user_id", "share_id", "currentId", "currentResponseIds")):
+                        return True
+                    if any(k in first for k in ("feature_config", "content_list", "modelName", "chat_type")):
+                        return True
+
+    return False
+
+def looks_like_claude_export(data):
+    """
+    Detect Claude exports by their conversation/message schema.
+    Detection is intentionally structural rather than filename-based.
+    """
+    conversations = data.get("conversations") if isinstance(data, dict) else data
+
+    if not isinstance(conversations, list) or not conversations:
+        return False
+
+    sample = next((x for x in conversations if isinstance(x, dict)), None)
+    if not sample:
+        return False
+
+    if any(key in sample for key in ("chat_messages", "conversation_uuid")):
+        return True
+
+    messages = find_message_list(sample)
+    if messages:
+        first = next((m for m in messages if isinstance(m, dict)), None)
+        if first and any(
+            key in first for key in ("sender", "created_at", "text")
+        ):
+            return True
+
+    return False
+
+
+def parse_chatgpt_conversation(chat):
+    """
+    Preserve the original ChatGPT mapping parser so the same script can
+    still read ChatGPT exports.
+    """
+    rows = []
+
+    def walk(mapping):
+        if not isinstance(mapping, dict):
+            return
+
+        message = mapping.get("message")
+        if isinstance(message, dict):
+            role = message.get("author", {}).get("role", "unknown")
+            content_data = message.get("content", {}) or {}
+            content_parts = content_data.get("parts", []) or []
+            content = extract_text_from_parts(content_parts)
+            raw_timestamp = message.get("create_time", "")
+            timestamp = convert_timestamp(raw_timestamp)
+
+            metadata = message.get("metadata", {}) or {}
+            model_used = metadata.get(
+                "model_slug",
+                content_data.get("model_slug", "unknown")
+            )
+
+            if content:
+                rows.append({
+                    "role": role,
+                    "content": content,
+                    "timestamp": timestamp,
+                    "_raw_timestamp": raw_timestamp,
+                    "word_count": count_words(content),
+                    "token_count": count_tokens(content),
+                    "sentence_count": count_sentences(content),
+                    "model": model_used,
+                    "parts": [
+                        p.get("text") if isinstance(p, dict) else p
+                        for p in content_parts
+                    ]
+                })
+
+            for child in message.get("children", []) or []:
+                walk({"message": child})
+
+    for mapping in (chat.get("mapping", {}) or {}).values():
+        walk(mapping)
+
+    return rows
+
+
+def parse_export(data):
+    """Provider-independent entry point for ChatGPT, Claude, DeepSeek, and Qwen."""
+    # Normalize top-level conversation containers.
+    if isinstance(data, dict) and isinstance(data.get("conversations"), list):
+        conversations = data["conversations"]
+    elif isinstance(data, list):
+        conversations = data
+    elif isinstance(data, dict) and find_deepseek_message_list(data):
+        conversations = [data]
+    else:
+        conversations = []
+
+    # Qwen must be detected before the generic DeepSeek/ChatGPT fallbacks.
+    if looks_like_qwen_export(data):
+        parsed = []
+        qwen_conversations = data.get("data", []) if isinstance(data, dict) else data
+        for conversation in qwen_conversations:
+            if not isinstance(conversation, dict):
+                continue
+            title = (
+                conversation.get("title")
+                or conversation.get("name")
+                or conversation.get("display_name")
+                or conversation.get("id")
+                or "Untitled Qwen Conversation"
+            )
+            rows = parse_qwen_conversation(conversation)
+            parsed.append({"title": title, "rows": rows, "provider": "Qwen"})
+        return parsed
+
+    # DeepSeek must be detected before the generic Claude/ChatGPT fallback.
+    if looks_like_deepseek_export(data):
+        parsed = []
+        for conversation in conversations:
+            if not isinstance(conversation, dict):
+                continue
+            title = (
+                conversation.get("title")
+                or conversation.get("name")
+                or conversation.get("display_name")
+                or conversation.get("conversationId")
+                or conversation.get("id")
+                or "Untitled DeepSeek Conversation"
+            )
+            rows = parse_deepseek_conversation(conversation)
+            parsed.append({"title": title, "rows": rows, "provider": "DeepSeek"})
+        return parsed
+
+    if looks_like_claude_export(data):
+        parsed = []
+        for conversation in conversations:
+            if not isinstance(conversation, dict):
+                continue
+            title = (
+                conversation.get("name")
+                or conversation.get("title")
+                or conversation.get("display_name")
+                or "Untitled Claude Conversation"
+            )
+            rows = parse_claude_conversation(conversation)
+            parsed.append({"title": title, "rows": rows, "provider": "Claude"})
+        return parsed
+
+    # Otherwise retain original ChatGPT export behavior.
+    parsed = []
+    for chat in conversations:
+        if not isinstance(chat, dict):
+            continue
+        title = chat.get("title", "Untitled Chat")
+        rows = parse_chatgpt_conversation(chat)
+        parsed.append({"title": title, "rows": rows, "provider": "ChatGPT"})
+    return parsed
+
 
 # === Enhanced Turn-Taking Analysis ===
 def compute_turntaking_metrics(messages):
@@ -941,7 +1794,7 @@ def detect_response_edits(messages):
 
 # === MAIN PROCESSING ===
 print("=" * 80)
-print("ChatGPT-DialogueMetrics v3.2")
+print("Universal DialogueMetrics v3.2 — Claude / ChatGPT / DeepSeek Parser")
 print("SPDX-License-Identifier: LicenseRef-RCNM-1.0")  
 print("Version: 1.0")
 print("Status: Custom Research License")
@@ -952,6 +1805,27 @@ print(f"\nLoading: {input_file}")
 
 with open(input_file, "r", encoding="utf-8") as f:
     data = json.load(f)
+
+parsed_conversations = parse_export(data)
+provider_names = sorted(set(c["provider"] for c in parsed_conversations))
+
+# Determine the output source label from the JSON structure, not the
+# input filename.
+if provider_names == ["ChatGPT"]:
+    output_prefix = "GPT"
+elif provider_names == ["Claude"]:
+    output_prefix = "CLAUDE"
+elif provider_names == ["DeepSeek"]:
+    output_prefix = "DEEPSEEK"
+elif provider_names == ["Qwen"]:
+    output_prefix = "QWEN"
+elif set(provider_names).issubset({"ChatGPT", "Claude", "DeepSeek", "Qwen"}) and len(provider_names) > 1:
+    output_prefix = "MIXED"
+else:
+    output_prefix = "UNKNOWN"
+
+main_output_file = f"{output_prefix}_analysis_{timestamp_str}.xlsx"
+matrix_output_file = f"{output_prefix}_matrices_{timestamp_str}.xlsx"
 
 all_chats = {}
 summary_rows = []
@@ -965,7 +1839,11 @@ all_messages_list = []                                             # for global 
 thread_act_counts = {}      # dict: thread_name -> defaultdict of transition counts
 thread_numeric_data = {}    # dict: thread_name -> DataFrame of numeric columns (for correlation)
 
-print(f"Found {len(data)} conversation(s) to analyze...\n")
+print(f"Detected provider(s): {', '.join(provider_names) if provider_names else 'Unknown'}")
+print(f"Output source label: {output_prefix}")
+print(f"Main output file: {main_output_file}")
+print(f"Matrix output file: {matrix_output_file}")
+print(f"Found {len(parsed_conversations)} conversation(s) to analyze...\n")
 
 # === Create two Excel writers ===
 with pd.ExcelWriter(main_output_file, engine="xlsxwriter") as main_writer, \
@@ -998,25 +1876,32 @@ with pd.ExcelWriter(main_output_file, engine="xlsxwriter") as main_writer, \
     center_fmt_matrix = workbook_matrix.add_format({'align': 'center', 'valign': 'vcenter'})
     number_fmt_matrix = workbook_matrix.add_format({'num_format': '0.00', 'align': 'center'})
 
-    for chat_idx, chat in enumerate(data, 1):
-        title = chat.get("title", "Untitled Chat")
-        safe_title = re.sub(r'[\\/*?:[\]]', '_', title)[:31]
-        
-        print(f"[{chat_idx}/{len(data)}] Processing: {title}")
-        
-        rows = []
-        timestamps = []
-        
-        # Extract messages
-        for mapping in chat.get("mapping", {}).values():
-            extracted = extract_messages(mapping)
-            rows.extend(extracted)
-            timestamps.extend([r["timestamp"] for r in extracted if r["timestamp"]])
-        
+    for chat_idx, conversation in enumerate(parsed_conversations, 1):
+        title = conversation.get("title", "Untitled Chat")
+        provider = conversation.get("provider", "Unknown")
+        safe_title = re.sub(r'[\\/*?:[\]]', '_', str(title))[:31]
+
+        print(f"[{chat_idx}/{len(parsed_conversations)}] Processing: {title} [{provider}]")
+
+        rows = conversation.get("rows", [])
+
         if not rows:
             print(f"  ⚠️  No messages found, skipping...\n")
             continue
-        
+
+        # CRITICAL ORDERING STEP:
+        # Sort by the COMPLETE timestamp (date + time + microseconds when
+        # available) BEFORE assigning Seq. # or computing sequential metrics.
+        rows, missing_timestamp_count = sort_messages_and_assign_sequence(rows)
+
+        if missing_timestamp_count:
+            print(
+                f"  ⚠️  {missing_timestamp_count} message(s) have missing/invalid "
+                f"timestamps; placed after timestamped messages."
+            )
+
+        timestamps = [r["timestamp"] for r in rows if r.get("timestamp")]
+
         # Compute dialogue metrics
         rows = compute_turntaking_metrics(rows)
         rows = classify_dialogue_acts(rows)
@@ -1028,8 +1913,13 @@ with pd.ExcelWriter(main_output_file, engine="xlsxwriter") as main_writer, \
         # Create DataFrame
         df = pd.DataFrame(rows)
         
-        # Add sequence numbers
-        df.insert(0, 'Seq. #', [f"#{i+1}" for i in range(len(df))])
+        # Seq. # was assigned AFTER chronological sorting.
+        # Do not regenerate it from DataFrame row order.
+        if "sequence_number" in df.columns:
+            df.insert(0, "Seq. #", df.pop("sequence_number"))
+        else:
+            # Defensive fallback for legacy parser output.
+            df.insert(0, "Seq. #", [f"#{i+1}" for i in range(len(df))])
         
         # Compute sentiment with scores
         sentiment_data = [compute_sentiment(row["content"]) for _, row in df.iterrows()]
@@ -1571,6 +2461,16 @@ with pd.ExcelWriter(main_output_file, engine="xlsxwriter") as main_writer, \
         "ENHANCED CHAT ANALYSIS TOOL v3.2 - METHODOLOGY NOTES",
         "=" * 80,
         "",
+        "SOURCE / PARSER HANDLING (Qwen AI):",
+        "   - Qwen exports are normalized into the common DialogueMetrics message schema.",
+        "   - Conversation records are read from the Qwen data/chat/history/messages structure.",
+        "   - User-visible assistant answers are extracted from Qwen answer content.",
+        "   - Internal thinking summaries and tool/code-interpreter fragments are excluded from conversational metrics.",
+        "   - Qwen message timestamps are parsed using the complete date and time, including microseconds when present.",
+        "   - Messages are chronologically sorted before Seq. # is assigned.",
+        "   - Original extraction order is retained only as a deterministic tie-breaker for identical timestamps.",
+        "   - Qwen message IDs, parent IDs, and source metadata are retained internally where available.",
+        "",
         "MEASUREMENT APPROACH:",
         "",
         "1. CONTRADICTION DETECTION (Enhanced)",
@@ -1721,7 +2621,7 @@ with pd.ExcelWriter(main_output_file, engine="xlsxwriter") as main_writer, \
         "",
         "If using this tool in research, please cite:",
         "ChatGPT-DialogueMetrics v3.2",
-        "Adapted from: [R.Rex] extended by ChatGPT (OpenAI), Claude (Anthropic), Kimi (Moonshot AI), DeepSeek (DeepSeek AI) and Gemini (Google DeepMind)",
+        "Adapted from: [R.Rex] extended by ChatGPT (OpenAI), Claude (Anthropic), Kimi (Moonshot AI), DeepSeek (DeepSeek AI), Qwen (Alibaba Cloud) and Gemini (Google DeepMind)",
         f"Generated: {datetime.now().strftime('%Y-%m-%d')}",
         "",
         "LICENSE: Research Commons Non-Monetization License (RCNM-1.0)",
@@ -1753,6 +2653,14 @@ with pd.ExcelWriter(main_output_file, engine="xlsxwriter") as main_writer, \
         f"- Refusal Markers",
     ]
     
+    # === WRITE METHODOLOGY NOTES SHEET ===
+    # Explicitly write the methodology list to the worksheet.
+    # This prevents the Methodology Notes sheet from being created empty.
+    notes_ws.set_column(0, 0, 100)
+    for row_idx, line in enumerate(methodology_text):
+        notes_ws.write(row_idx, 0, line)
+    notes_ws.freeze_panes(0, 0)
+
     # =============================================================================
     # WRITE MATRIX OUTPUT FILE (with guaranteed sheets, back links, and freeze panes)
     # =============================================================================
@@ -1893,7 +2801,7 @@ with pd.ExcelWriter(main_output_file, engine="xlsxwriter") as main_writer, \
     readme = [
         "MATRIX ANALYSIS FILE",
         "====================",
-        "This file contains global and per-thread matrices.",
+        "This file contains global and per-thread matrices for the analyzed AI conversation export.",
     ]
     if not matrix_sheets:
         readme.append("")
