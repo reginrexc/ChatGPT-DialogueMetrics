@@ -183,17 +183,7 @@ That should be corrected in the methodology sheet.
 
 The script implements:
 
-$$
-\large
-\boxed{
-FRE =
-206.835
--
-1.015\left(\frac{W}{S}\right)
--
-84.6\left(\frac{Y}{W}\right)
-}
-$$
+$$\Large\boxed{\text{FRE}=206.835-1.015\left(\frac{W}{S}\right)-84.6\left(\frac{Y}{W}\right)}$$
 
 where:
 
@@ -261,19 +251,7 @@ $$
 $$
 
 Total:
-
-$$
-\large
-\boxed{
-E_{total}
-=
-E_{causation}
-+E_{explanation}
-+E_{expansion}
-+E_{consequence}
-+E_{exemplification}
-}
-$$
+$$\Large\boxed{E_{\text{total}} = E_{\text{causation}} + E_{\text{explanation}} + E_{\text{expansion}} + E_{\text{consequence}} + E_{\text{exemplification}}}$$
 
 The five categories are explicitly defined in the code. 
 
@@ -646,14 +624,15 @@ $$
 ### 33. Urgency Level
 
 $$
-\large
-Urgency=
+\Large
+\text{Urgency} =
 \begin{cases}
-High & U>2\\
-Medium & 0<U\le2\\
-Low & U=0
+\text{High} & \text{if } U > 2 \\
+\text{Medium} & \text{if } 0 < U \le 2 \\
+\text{Low} & \text{if } U = 0
 \end{cases}
 $$
+
 
 where $U$ is the urgency‑marker count.
 
@@ -796,22 +775,19 @@ This is important for transparency:
 For each consecutive pair:
 
 $$
-\large KP_i=
-\frac{|K_{i-1}\cap K_i|}
-{|K_{i-1}|}
+\Large
+\text{KP}_i = \frac{|K_{i-1} \cap K_i|}{|K_{i-1}|}
 $$
 
 Then:
 
 $$
-\large
+\Large
 \boxed{
-\overline{KP}
-=
-\frac{1}{n}
-\sum_i KP_i
+\overline{\text{KP}} = \frac{1}{n} \sum_{i} \text{KP}_i
 }
 $$
+
 
 Again, directional rather than symmetric.
 
@@ -1077,11 +1053,11 @@ within the sliding window.
 The current code classifies:
 
 $$
-\large
-Trend=
+\Large
+\text{Trend} =
 \begin{cases}
-Decreasing & C_{current}<C_{previous}\\
-Stable & otherwise
+\text{Decreasing} & \text{if } C_{\text{current}} < C_{\text{previous}} \\
+\text{Stable} & \text{otherwise}
 \end{cases}
 $$
 
@@ -1097,10 +1073,7 @@ with a comparison against a prior window.
 
 For consecutive dialogue acts:
 
-$$
-\large T_{ij}=
-\#(Act_i\rightarrow Act_j)
-$$
+$$\Large T_{ij} = \text{Count}(\text{Act}_i \rightarrow \text{Act}_j)$$
 
 ---
 
@@ -1125,19 +1098,7 @@ $$
 
 For numerical metrics $X$ and $Y$:
 
-$$
-\large
-\boxed{
-r_{XY}
-=
-\frac{
-\sum_i(X_i-\bar X)(Y_i-\bar Y)
-}{
-\sqrt{\sum_i(X_i-\bar X)^2}
-\sqrt{\sum_i(Y_i-\bar Y)^2}
-}
-}
-$$
+$$\Large\boxed{r_{XY} = \frac{\sum_i(X_i-\bar X)(Y_i-\bar Y)}{\sqrt{\sum_i(X_i-\bar X)^2}\sqrt{\sum_i(Y_i-\bar Y)^2}}}$$
 
 The script uses:
 
@@ -1181,27 +1142,15 @@ $$
 
 ### 64. Mean response time
 
-$$
-\large \overline{RT}
-=
-mean(RT_i)
-$$
+$$\Large \overline{\text{RT}} = \text{mean}(\text{RT}_i)$$
 
 ### 65. Mean response ratio
 
-$$
-\large \overline{RR}
-=
-mean(RR_i)
-$$
+$$\Large \overline{\text{RR}} = \text{mean}(\text{RR}_i)$$
 
 ### 66. Mean semantic overlap
 
-$$
-\large \overline{SO}
-=
-mean(SO_i)
-$$
+$$\Large \overline{\text{SO}} = \text{mean}(\text{SO}_i)$$
 
 These are implemented directly in the thread summary. 
 
@@ -1225,15 +1174,11 @@ Note that this is technically **self‑correction markers per message**, not "pe
 
 ### 68. Complete argument count
 
-$$
-\large CA=\#(ArgumentStructure=complete)
-$$
+$$\Large \text{CA} = \\#(\text{ArgumentStructure} = \text{complete})$$
 
 ### 69. High‑urgency count
 
-$$
-\large HU=\#(UrgencyLevel=high)
-$$
+$$\Large \text{HU} = \\#(\text{UrgencyLevel} = \text{high})$$
 
 These are counts rather than normalized rates. 
 
@@ -1296,14 +1241,8 @@ for contradiction detection.
 
 That is more defensible than calling it semantic contradiction, but I would go one step further and explicitly state:
 
-$$
-\large
-\boxed{
-Contradiction\ Index
-=
-Lexical\ Contradiction\ Marker\ Frequency
-}
-$$
+$$\Large\boxed{\text{Contradiction Index} = \text{Lexical Contradiction Marker Frequency}}$$
+
 
 **not**
 
@@ -1325,4 +1264,4 @@ The same principle should apply to **every metric**.
 That would make the Qwen comments problem you raised earlier much easier to solve, because the commentary layer would no longer be allowed to infer something stronger than the underlying equation supports.
 
 The current code itself provides enough information to build this as a **full mathematical codebook** rather than the much shorter narrative methodology currently embedded in the workbook.
-```
+
